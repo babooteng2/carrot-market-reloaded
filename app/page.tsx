@@ -9,9 +9,12 @@ export default function Home() {
   ">
     <div
       className="flex flex-col md:flex-row gap-2 bg-white w-full shadow-lg p-5 rounded-2xl 
-        max-w-screen-sm">
+        max-w-screen-sm
+        *:outline-none
+        ring ring-transparent transition-shadow duration-1000
+        has-[:invalid]:ring-red-100">
       <input
-        className="w-full rounded-full pl-5 bg-gray-100 py-3 ring ring-transparent outline-none 
+        className="w-full rounded-full pl-5 bg-gray-100 py-3 ring ring-transparent 
         focus:ring-green-500
           focus:ring-offset-2
           transition-shadow
@@ -28,7 +31,7 @@ export default function Home() {
         Email is required
       </span>
       <button className="font-medium text-white py-2 rounded-full active:scale-95 hover:scale-105 text-nowrap
-        transition-transform outline-none
+        transition-transform
         md:px-10
         bg-black
         peer-invalid:bg-red-500
