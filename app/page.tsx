@@ -8,36 +8,27 @@ export default function Home() {
       2xl:bg-purple-100
   ">
     <div
-      className="flex flex-col md:flex-row gap-2 bg-white w-full shadow-lg p-5 rounded-2xl 
+      className="flex flex-col md:flex-row gap-3 bg-white w-full shadow-lg p-5 rounded-2xl 
         max-w-screen-sm
-        *:outline-none
-        ring ring-transparent transition-shadow duration-1000
-        has-[:invalid]:ring-red-100">
-      <input
-        className="w-full rounded-full pl-5 bg-gray-100 py-3 ring ring-transparent 
-        focus:ring-green-500
-          focus:ring-offset-2
-          transition-shadow
-          placeholder:drop-shadow
-          invalid:focus:ring-red-500
-          peer"
-        type="email"
-        required
-        placeholder="Email address"
-      />
-      <span className="hidden peer-invalid:block
-        md:absolute md:pt-12 md:ml-5 text-center text-red-500 font-medium"
-      >
-        Email is required
-      </span>
-      <button className="font-medium text-white py-2 rounded-full active:scale-95 hover:scale-105 text-nowrap
-        transition-transform
-        md:px-10
-        bg-black
-        peer-invalid:bg-red-500
-        peer-required:bg-green-500">
-        Log in
-      </button>
+    ">
+      {["Nico", "Me", "You", "Yourself", ""].map((person, index) => (
+        <div key={index} className="flex items-center gap-5">
+          <div className="size-10 bg-blue-400 rounded-full" />
+          <span className="text-lg font-medium
+            empty:w-24 empty:h-5 empty:rounded-full empty:animate-pulse empty:bg-gray-300
+          ">
+            {person}
+          </span>
+          <div className="size-6
+            bg-red-500 text-white flex items-center justify-center rounded-full relative
+          ">
+            <span className="z-10">{index}</span>
+            <div className="size-6 bg-red-500 rounded-full absolute animate-ping" />
+          </div>
+          {/* <div className="w-40 h-3 rounded-full bg-gray-400" />
+          <div className="w-20 h-3 rounded-full bg-gray-400" /> */}
+        </div>
+      ))}
     </div>
   </main>;
 }
