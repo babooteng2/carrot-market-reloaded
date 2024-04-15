@@ -1,32 +1,18 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-/* 
-.btn {
-    @apply bg-black text-white
-    rounded-[11.11px]
-    p-sexy-name
-    m-tomato
-}
- */
 
-@layer base {
-    a {
-        @apply text-blue-500
+@layer utilities {    
+    .form-input {
+        @apply mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50
     }
-}
-
-@layer components {
-    .btn {
-        @apply bg-black text-white
-        rounded-[11.11px]
-        p-sexy-name
-        m-tomato
+    .form-select {
+        @apply block w-full mt-1 rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50
     }
-}
-
-@layer utilities {
-    .text-bigger-hello {
-        @apply text-3xl font-semibold
+    .form-textarea {
+        @apply mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50
     }
-}
+    .form-checkbox {
+        @apply rounded border-gray-300 text-indigo-600 shadow-sm focus:border-indigo-300 focus:ring focus:ring-offset-0 focus:ring-indigo-200 focus:ring-opacity-50
+    }
+} 
