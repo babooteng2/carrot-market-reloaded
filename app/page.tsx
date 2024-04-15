@@ -11,12 +11,16 @@ export default function Home() {
       className="flex flex-col md:flex-row gap-3 bg-white w-full shadow-lg p-5 rounded-2xl 
         max-w-screen-sm
     ">
-      <div className="group flex flex-col">
-        <input className="bg-gray-100 w-full" />
+      <div className="group flex flex-col w-full gap-4">
+        <input className="bg-gray-100" />
         <span className="group-focus-within:block hidden">
           Make sure it is a valid email...
         </span>
-        <button>Submit</button>
+        <button className="bg-black text-white
+          rounded-[11.11px]
+          p-sexy-name
+          m-tomato
+        ">Submit</button>
       </div>
       {/* {["Nico", "Me", "You", "Yourself", ""].map((person, index) => (
         <div key={index} className="flex items-center gap-5 group">          
