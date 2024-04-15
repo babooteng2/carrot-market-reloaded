@@ -31,7 +31,7 @@ export default function Home() {
         </div>
         <button className="
           btn
-          text-bigger-hello  
+          btn-primary          
         ">Submit</button>
       </div>
     </div>
