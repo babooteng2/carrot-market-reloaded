@@ -16,10 +16,10 @@ export default function Home() {
         <span className="group-focus-within:block hidden">
           Make sure it is a valid email...
         </span>
-        <button className="bg-black text-white
-          rounded-[11.11px]
-          p-sexy-name
-          m-tomato
+        <a href="#">aaa</a>
+        <button className="
+          btn
+          text-bigger-hello  
         ">Submit</button>
       </div>
       {/* {["Nico", "Me", "You", "Yourself", ""].map((person, index) => (
