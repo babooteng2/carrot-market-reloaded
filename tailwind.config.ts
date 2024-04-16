@@ -18,9 +18,9 @@ const config: Config = {
   },
   plugins: [
     require('@tailwindcss/forms')({
-      strategy: 'class',
+      // strategy: 'class',
     }),
-    require('daisyui'),
+    // require('daisyui'),
   ],
 };
 export default config;
