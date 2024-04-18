@@ -11,8 +11,7 @@ export default function Home() {
       <div className="flex flex-col w-full gap-2">
         <Link
           href="/create-account"
-          className="bg-orange-500 text-white text-lg font-medium py-2.5
-            rounded-md text-center hover:bg-orange-400 transition-colors"
+          className="primary-btn h-10"
         >
           시작하기
         </Link>

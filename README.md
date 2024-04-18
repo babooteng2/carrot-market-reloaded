@@ -1,7 +1,8 @@
 # Carrot Market Reloaded
 
-``` Install daisyUI
+``` terminal
 npm i -D daisyui@latest
+npm install @heroicons/react
 ```
 
 ``` tailwind.config.js
@@ -13,3 +14,4 @@ module.exports = {
 [daisyUI](https://daisyui.com/docs/install/)
 [daisyUI test](https://stackblitz.com/edit/daisyui-nextjs?file=tailwind.config.js)
 [tailwindcss Customizing Colors](https://tailwindcss.com/docs/customizing-colors)
+[heroicons](https://github.com/tailwindlabs/heroicons)
