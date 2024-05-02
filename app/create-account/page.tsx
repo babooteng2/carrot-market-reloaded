@@ -15,10 +15,11 @@ export default function CreateAccount() {
                     placeholder="Username"
                     required
                     errors={[]}
+                    name="name"
                 />
-                <FormInput type="text" placeholder="Email" required errors={[]} />
-                <FormInput type="text" placeholder="Password" required errors={[]} />
-                <FormInput type="text" placeholder="Confirm Password" required errors={[]} />
+                <FormInput type="text" placeholder="Email" required errors={[]} name="email" />
+                <FormInput type="text" placeholder="Password" required errors={[]} name="password" />
+                <FormInput type="text" placeholder="Confirm Password" required errors={[]} name="confirm" />
                 <FormButton loading={false} text="Create account" />
             </form>
             <SocialLogin />
