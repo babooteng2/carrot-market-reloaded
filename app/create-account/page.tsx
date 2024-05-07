@@ -20,7 +20,7 @@ export default function CreateAccount() {
                 <FormInput type="text" placeholder="Email" required errors={[]} name="email" />
                 <FormInput type="text" placeholder="Password" required errors={[]} name="password" />
                 <FormInput type="text" placeholder="Confirm Password" required errors={[]} name="confirm" />
-                <FormButton loading={false} text="Create account" />
+                <FormButton text="Create account" />
             </form>
             <SocialLogin />
         </div>
