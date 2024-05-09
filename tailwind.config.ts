@@ -1,4 +1,4 @@
-import type { Config } from "tailwindcss";
+import type { Config } from "tailwindcss"
 
 const config: Config = {
   content: [
@@ -9,18 +9,18 @@ const config: Config = {
   theme: {
     extend: {
       margin: {
-        "tomato": "120px",
+        tomato: "120px",
       },
       padding: {
         "sexy-name": "11.11px",
-      }
-    }
+      },
+    },
   },
   plugins: [
-    require('@tailwindcss/forms')({
+    require("@tailwindcss/forms")({
       // strategy: 'class',
     }),
     // require('daisyui'),
   ],
-};
-export default config;
+}
+export default config

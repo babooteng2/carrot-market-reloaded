@@ -1,4 +1,4 @@
-import Link from "next/link";
+import Link from "next/link"
 
 export default function Home() {
   return (
@@ -9,15 +9,14 @@ export default function Home() {
         <h2 className="text-2xl">당근 마켓에 어서오세요!</h2>
       </div>
       <div className="flex flex-col w-full gap-2">
-        <Link
-          href="/create-account"
-          className="primary-btn h-10"
-        >
+        <Link href="/create-account" className="primary-btn h-10">
           시작하기
         </Link>
         <div className="flex justify-center gap-2">
           <span>이미 계정이 있나요?</span>
-          <Link href="/login" className="hover:underline">로그인</Link>
+          <Link href="/login" className="hover:underline">
+            로그인
+          </Link>
         </div>
       </div>
     </div>
