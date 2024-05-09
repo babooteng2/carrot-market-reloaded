@@ -3,6 +3,7 @@
 ```terminal
 npm i -D daisyui@latest
 npm install @heroicons/react
+npm i zod
 ```
 
 ```tailwind.config.js

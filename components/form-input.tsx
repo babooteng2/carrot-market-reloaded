@@ -22,10 +22,12 @@ export default function FormInput({
         placeholder={placeholder}
         required={required}
       />
-      {/* {errors.map((error, index) => (
-        <span key={index} className="text-red-500 font-medium">{error}</span>
-      ))} */}
-      {errors ?? []}
+      {errors.map((error, index) => (
+        <span key={index} className="text-red-500 font-medium">
+          {error}
+        </span>
+      ))}
+      {/* {errors ?? []} */}
     </div>
   )
 }
