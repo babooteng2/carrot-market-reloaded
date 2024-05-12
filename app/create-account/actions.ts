@@ -13,7 +13,7 @@ const checkPasswords = ({
   confirmPassword: string
 }) => password === confirmPassword
 
-const fromSchema = z
+const formSchema = z
   .object({
     userName: z
       .string({
@@ -50,7 +50,7 @@ export async function createAccount(prevState: any, formData: FormData) {
     password: formData.get("password"),
     confirmPassword: formData.get("confirmPassword"),
   }
-  const result = fromSchema.safeParse(data)
+  const result = formSchema.safeParse(data)
 
   if (!result.success) {
     //console.log("validation failed : ", result.error.flatten())
