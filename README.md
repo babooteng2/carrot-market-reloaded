@@ -4,6 +4,8 @@
 npm i -D daisyui@latest
 npm install @heroicons/react
 npm i zod
+npm i validator
+npm i -D @types/validator
 ```
 
 ```tailwind.config.js
