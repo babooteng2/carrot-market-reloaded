@@ -16,6 +16,11 @@ add .env at .gitignore
 complete line DATABASE_URL="" at .env
 schema.prisma setting provider
 install "Prisma" vscode extension to help formating and autocompleting
+
+npx prisma migrate dev
+track db file name set as "add_user"
+add *.db* at .gitignore
+install "sqlite viewer" vscode extension to check *.db tables
 ```
 
 ```tailwind.config.js
