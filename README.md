@@ -6,6 +6,16 @@ npm install @heroicons/react
 npm i zod
 npm i validator
 npm i @types/validator
+
+npm i prisma
+```
+
+```prisma setting
+npx prisma init
+add .env at .gitignore
+complete line DATABASE_URL="" at .env
+schema.prisma setting provider
+install "Prisma" vscode extension to help formating and autocompleting
 ```
 
 ```tailwind.config.js
