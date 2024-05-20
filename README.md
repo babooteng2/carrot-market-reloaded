@@ -21,6 +21,8 @@ npx prisma migrate dev
 track db file name set as "add_user"
 add *.db* at .gitignore
 install "sqlite viewer" vscode extension to check *.db tables
+
+make db.ts file under lib folder and import { PrismaClient } from "@prisma/client"
 ```
 
 ```tailwind.config.js
