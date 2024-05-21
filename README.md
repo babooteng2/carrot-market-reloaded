@@ -25,6 +25,15 @@ install "sqlite viewer" vscode extension to check *.db tables
 creates db.ts file under lib folder and import { PrismaClient } from "@prisma/client"
 
 npx prisma studio
+
+modify settings.json
+"[prisma]": {
+"editor.defaultFormatter": "Prisma.prisma"
+}
+
+whenever we modify schema, need to type
+'npx prisma migrate dev'. 
+through this command update client. 
 ```
 
 ```tailwind.config.js
