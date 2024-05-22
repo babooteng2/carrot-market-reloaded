@@ -11,27 +11,29 @@ npm i prisma
 ```
 
 ```prisma setting
-npx prisma init
+ - 'npx prisma init'
 add .env at .gitignore
 complete line DATABASE_URL="" at .env
 schema.prisma setting provider
 install "Prisma" vscode extension to help formating and autocompleting
 
-npx prisma migrate dev
+ - 'npx prisma migrate dev' to create Client for DB
 track db file name set as "add_user"
 add *.db* at .gitignore
 install "sqlite viewer" vscode extension to check *.db tables
 
 creates db.ts file under lib folder and import { PrismaClient } from "@prisma/client"
+const db = new PrismaClient()
+export default db
 
-npx prisma studio
+ - 'npx prisma studio' to check db tables
 
-modify settings.json
+modify settings.json to autocomplete by vscode
 "[prisma]": {
 "editor.defaultFormatter": "Prisma.prisma"
 }
 
-whenever we modify schema, need to type
+whenever we modify schema(./prisma/schema.prisma), need to type
 'npx prisma migrate dev'. 
 through this command update client. 
 ```
