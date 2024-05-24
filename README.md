@@ -34,8 +34,13 @@ modify settings.json to autocomplete by vscode
 }
 
 whenever we modify schema(./prisma/schema.prisma), need to type
-'npx prisma migrate dev'. 
-through this command update client. 
+'npx prisma migrate dev'.
+through this command update client.
+```
+
+```password hashing
+npm i bcrypt
+npm i @types/bcrypt
 ```
 
 ```tailwind.config.js
