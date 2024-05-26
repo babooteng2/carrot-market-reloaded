@@ -23,12 +23,6 @@ const checkUniqueUsername = async (username: string) => {
     },
   })
   return !Boolean(user)
-  // if( user ) {
-  //   // show an error
-  //   return false
-  // } else {
-  //   return true
-  // }
 }
 
 const checkUniqueEmail = async (email: string) => {
@@ -60,9 +54,6 @@ const formSchema = z
       })
       .toLowerCase()
       .trim()
-      // .transform((username) =>
-      //   userName.includes("flameable") ? `🔥 ${username}` : userName
-      // )
       .refine(checkUserName, "No potatoes allowed")
       .refine(checkUniqueUsername, "This username is already taken"),
     email: z
@@ -74,6 +65,7 @@ const formSchema = z
         "There is an account already registred with that email"
       ),
     password: z.string().min(PASSWORD_MIN_LENGTH),
+    // for test
     //      .regex(PASSWORD_REGEX, PASSWORD_REG_ERROR),
     confirmPassword: z.string().min(8),
   })
@@ -90,13 +82,11 @@ export async function createAccount(prevState: any, formData: FormData) {
     confirmPassword: formData.get("confirmPassword"),
   }
   //const result = formSchema.safeParse(data)
-  const result = await formSchema.safeParseAsync(data)
+  // const result = formSchema.safeParseAsync(data)
+  const result = await formSchema.spa(data)
   if (!result.success) {
     return result.error.flatten()
   } else {
-    // done 1. check if username is taken
-    // done 2. check if the email is already used
-    // 3. hash password
     const hashedPassword = await bcrypt.hash(result.data.password, 12)
     const user = await db.user.create({
       data: {
@@ -108,7 +98,6 @@ export async function createAccount(prevState: any, formData: FormData) {
         id: true,
       },
     })
-    // 4. save the user to db ( log the user in )
     const session = await getIronSession(cookies(), {
       cookieName: "delicious-carrot",
       password: process.env.COOKIE_PASSWORD!,
@@ -116,7 +105,6 @@ export async function createAccount(prevState: any, formData: FormData) {
     //@ts-ignore
     session.id = user.id
     await session.save()
-    // 5. redirect "/home"
     redirect("/profile")
   }
 }
