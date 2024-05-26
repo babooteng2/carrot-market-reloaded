@@ -7,11 +7,13 @@ import {
 } from "../lib/constants"
 import db from "@/app/lib/db"
 import bcrypt from "bcrypt"
+import { getIronSession } from "iron-session"
+import { cookies } from "next/headers"
+import { redirect } from "next/navigation"
 
 const checkUserName = (username: string) => !username.includes("potato")
 
 const checkUniqueUsername = async (username: string) => {
-  console.log("work through here?", username)
   const user = await db.user.findUnique({
     where: {
       username,
@@ -106,8 +108,15 @@ export async function createAccount(prevState: any, formData: FormData) {
         id: true,
       },
     })
-    console.log(user)
-    // 4. save the user to db
+    // 4. save the user to db ( log the user in )
+    const session = await getIronSession(cookies(), {
+      cookieName: "delicious-carrot",
+      password: process.env.COOKIE_PASSWORD!,
+    })
+    //@ts-ignore
+    session.id = user.id
+    await session.save()
     // 5. redirect "/home"
+    redirect("/profile")
   }
 }

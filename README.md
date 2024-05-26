@@ -43,6 +43,12 @@ npm i bcrypt
 npm i @types/bcrypt
 ```
 
+```Iron session
+npm i iron-session
+getIronSession(cookies())
+https://1password.com/ko/password-generator/
+```
+
 ```tailwind.config.js
 module.exports = {
   //...
