@@ -7,9 +7,8 @@ import {
 } from "../lib/constants"
 import db from "@/app/lib/db"
 import bcrypt from "bcrypt"
-import { getIronSession } from "iron-session"
-import { cookies } from "next/headers"
 import { redirect } from "next/navigation"
+import getSession from "./session"
 
 const checkUserName = (username: string) => !username.includes("potato")
 
@@ -98,11 +97,7 @@ export async function createAccount(prevState: any, formData: FormData) {
         id: true,
       },
     })
-    const session = await getIronSession(cookies(), {
-      cookieName: "delicious-carrot",
-      password: process.env.COOKIE_PASSWORD!,
-    })
-    //@ts-ignore
+    const session = await getSession()
     session.id = user.id
     await session.save()
     redirect("/profile")
