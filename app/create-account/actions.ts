@@ -53,20 +53,52 @@ const formSchema = z
       })
       .toLowerCase()
       .trim()
-      .refine(checkUserName, "No potatoes allowed")
-      .refine(checkUniqueUsername, "This username is already taken"),
-    email: z
-      .string()
-      .email()
-      .toLowerCase()
-      .refine(
-        checkUniqueEmail,
-        "There is an account already registred with that email"
-      ),
+      .refine(checkUserName, "No potatoes allowed"),
+
+    email: z.string().email().toLowerCase(),
+
     password: z.string().min(PASSWORD_MIN_LENGTH),
     // for test
     //      .regex(PASSWORD_REGEX, PASSWORD_REG_ERROR),
     confirmPassword: z.string().min(8),
+  })
+  .superRefine(async ({ username }, ctx) => {
+    const user = await db.user.findUnique({
+      where: {
+        username,
+      },
+      select: {
+        id: true,
+      },
+    })
+    if (user) {
+      ctx.addIssue({
+        code: "custom",
+        message: "This username is already taken",
+        path: ["username"],
+        fatal: true,
+      })
+      return z.never
+    }
+  })
+  .superRefine(async ({ email }, ctx) => {
+    const user = await db.user.findUnique({
+      where: {
+        email,
+      },
+      select: {
+        id: true,
+      },
+    })
+    if (user) {
+      ctx.addIssue({
+        code: "custom",
+        message: "This email is already taken",
+        path: ["email"],
+        fatal: true,
+      })
+      return z.never
+    }
   })
   .refine(checkPasswords, {
     path: ["confirmPassword"],
@@ -84,6 +116,7 @@ export async function createAccount(prevState: any, formData: FormData) {
   // const result = formSchema.safeParseAsync(data)
   const result = await formSchema.spa(data)
   if (!result.success) {
+    console.log(result.error.flatten())
     return result.error.flatten()
   } else {
     const hashedPassword = await bcrypt.hash(result.data.password, 12)
