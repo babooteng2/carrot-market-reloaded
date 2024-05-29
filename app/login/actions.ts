@@ -6,9 +6,9 @@ import {
   PASSWORD_REGEX,
   PASSWORD_REG_ERROR,
 } from "../lib/constants"
-import db from "../lib/db"
+import db from "@/lib/db"
 import bcrypt from "bcrypt"
-import getSession from "../create-account/session"
+import getSession from "@/lib/session"
 import { redirect } from "next/navigation"
 
 const checkEmailExists = async (email: string) => {
@@ -67,7 +67,7 @@ export async function login(prevState: any, formData: FormData) {
     if (ok) {
       const session = await getSession()
       session.id = user!.id
-      session.save()
+      await session.save()
       redirect("/profile")
     } else {
       return {
