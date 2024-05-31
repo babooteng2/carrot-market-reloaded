@@ -10,7 +10,9 @@ async function getUser() {
         id: session.id,
       },
     })
-    return user
+    if (user) {
+      return user
+    }
   }
   notFound()
 }
