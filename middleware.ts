@@ -5,16 +5,7 @@ import getSession from "./app/lib/session"
 import { URL } from "url"
 
 export async function middleware(request: NextRequest) {
-  const pathname = request.nextUrl.pathname
-  console.log("hello")
-  if (pathname === "/") {
-    const response = NextResponse.next()
-    response.cookies.set("middleware-cookie", "hello")
-    return response
-  }
-  if (pathname === "/profile") {
-    return NextResponse.redirect(new URL("/", request.url))
-  }
+  // edge runtime
 }
 
 export const config = {
