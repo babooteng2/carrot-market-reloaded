@@ -1,11 +1,33 @@
-import { error } from "console"
-import { cookies } from "next/headers"
 import { NextRequest, NextResponse } from "next/server"
 import getSession from "./app/lib/session"
-import { URL } from "url"
+
+interface Routes {
+  [key: string]: boolean
+}
+
+const publicOnlyUrls: Routes = {
+  "/": true,
+  "/login": true,
+  "/sms": true,
+  "/create-account": true,
+}
 
 export async function middleware(request: NextRequest) {
-  // edge runtime
+  const session = await getSession()
+  const exists = publicOnlyUrls[request.nextUrl.pathname]
+  //status of user not logged in
+  if (!session.id) {
+    //status of user going to unexceptional site
+    if (!exists) {
+      console.log("go away")
+      return NextResponse.redirect(new URL("/", request.url))
+    }
+  } else {
+    //status of user logged in and don't want to see publicOnlyUrls again
+    if (exists) {
+      return NextResponse.redirect(new URL("/products", request.url))
+    }
+  }
 }
 
 export const config = {
