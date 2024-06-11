@@ -60,3 +60,4 @@ module.exports = {
 [daisyUI test](https://stackblitz.com/edit/daisyui-nextjs?file=tailwind.config.js)
 [tailwindcss Customizing Colors](https://tailwindcss.com/docs/customizing-colors)
 [heroicons](https://github.com/tailwindlabs/heroicons)
+[OAuth scope option](https://docs.github.com/en/apps/oauth-apps/building-oauth-apps/authorizing-oauth-apps)
