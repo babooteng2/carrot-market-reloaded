@@ -61,3 +61,4 @@ module.exports = {
 [tailwindcss Customizing Colors](https://tailwindcss.com/docs/customizing-colors)
 [heroicons](https://github.com/tailwindlabs/heroicons)
 [OAuth scope option](https://docs.github.com/en/apps/oauth-apps/building-oauth-apps/authorizing-oauth-apps)
+[OAuth documentation user](https://docs.github.com/rest/users/users#get-the-authenticated-user)

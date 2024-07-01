@@ -1,28 +1,48 @@
 import { PrismaClient } from "@prisma/client"
 
 const db = new PrismaClient()
+export default db
 
-async function test() {
-  // const token = await db.sMSToken.create({
-  //   data: {
-  //     token: "12112",
-  //     user: {
-  //       connect: {
-  //         id: 1
-  //       }
-  //     }
-  //   }
-  // })
-  const token = await db.sMSToken.findUnique({
+export const getUserByID = async (id: number) => {
+  const user = await db.user.findUnique({
     where: {
-      id: 1,
+      github_id: String(id),
     },
-    include: {
-      user: true,
+    select: {
+      id: true,
     },
   })
+  return user
 }
 
-test()
+export const isUniqueUsername = async (username: string) => {
+  const user = await db.user.findUnique({
+    where: {
+      username,
+    },
+    select: {
+      id: true,
+    },
+  })
+  return !Boolean(user)
+}
 
-export default db
+export const createNewUserByGithub = async (
+  newGitHubUsername: string,
+  id: number,
+  avatar_url: string,
+  email: string
+) => {
+  const newUser = await db.user.create({
+    data: {
+      username: newGitHubUsername,
+      github_id: String(id),
+      avatar: avatar_url,
+      email,
+    },
+    select: {
+      id: true,
+    },
+  })
+  return newUser
+}

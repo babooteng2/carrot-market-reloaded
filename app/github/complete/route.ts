@@ -1,60 +1,45 @@
-import db from "@/app/lib/db"
-import getSession from "@/app/lib/session"
-import { log } from "console"
-import { notFound, redirect } from "next/navigation"
+import {
+  createNewUserByGithub,
+  getUserByID,
+  isUniqueUsername,
+} from "@/app/lib/db"
+import { setSessionLogInID } from "@/app/lib/session"
+import { getAccessToken, getUserProfile } from "@/app/lib/utils"
 import { NextRequest } from "next/server"
 
 export async function GET(request: NextRequest) {
-  const code = request.nextUrl.searchParams.get("code")
-  if (!code) {
-    return notFound()
-  }
-  const accessTokenParams = new URLSearchParams({
-    client_id: process.env.GITHUB_CLIENT_ID!,
-    client_secret: process.env.GITHUB_CLIENT_SECRET!,
-    code,
-  }).toString()
-  const accessTokenURL = `https://github.com/login/oauth/access_token?${accessTokenParams}`
-  const accessTokenRespone = await fetch(accessTokenURL, {
-    method: "POST",
-    headers: { Accept: "application/json" },
-  })
-  const { error, access_token } = await accessTokenRespone.json()
-  if (error) {
-    return new Response(null, { status: 400 })
-  }
-  const userProfileResponse = await fetch("https://api.github.com/user", {
-    headers: { Authorization: `Bearer ${access_token}` },
-    cache: "no-cache",
-  })
-  const { id, avatar_url, login } = await userProfileResponse.json()
-  const user = await db.user.findUnique({
-    where: {
-      github_id: id + "",
-    },
-    select: {
-      id: true,
-    },
-  })
+  // 1. github이 준 파라미터 code를 가져옴
+  // 2. 코드가 없으면 에러
+  // 3. 3-1. github/start 에서 "https://github.com/login/oauth/authorize"에 client_id를 실어보냄
+  //    3-2. github/complete 로 code 파라미터 실어서 응답 보내줌
+  //    3-3. "https://github.com/login/oauth/access_token" 에 POST/json로 client_id, client_secret 실어보냄
+  //    3-4. userProfile 얻음
+  //      -----------username 중복 체크----------------
+  //      --------------------------------------------
+  //    3-5. userEmail 얻음
+  const access_token = await getAccessToken(request)
+  const userProfile = await getUserProfile(request, access_token)
+  const { id, avatar_url, login, email } = userProfile
+  //const githubEmailID = email ? String(email).split("@")[0] : null
+  const user = await getUserByID(id)
   if (user) {
-    const session = await getSession()
-    session.id = user.id
-    await session.save()
-    return redirect("/profile")
+    await setSessionLogInID(user.id, "/profile")
+  } else {
+    // todo : username은 필수 항목인데 새사용자 생성시 같은이름이 존재할 때 처리필요
+    const isNewUser = await isUniqueUsername(login)
+    //
+    if (isNewUser) {
+      const newUser = await createNewUserByGithub(login, id, avatar_url, email)
+      await setSessionLogInID(newUser.id, "/profile")
+    } else {
+      const newGitHubUsername = `${login}_gh`
+      const newUser = await createNewUserByGithub(
+        newGitHubUsername,
+        id,
+        avatar_url,
+        email
+      )
+      await setSessionLogInID(newUser.id, "/profile")
+    }
   }
-  // todo : username은 필수 항목인데 새사용자 생성시 같은이름이 존재할 때 처리필요
-  const newUser = await db.user.create({
-    data: {
-      username: login,
-      github_id: id + "",
-      avatar: avatar_url,
-    },
-    select: {
-      id: true,
-    },
-  })
-  const session = await getSession()
-  session.id = newUser.id
-  await session.save()
-  return redirect("/profile")
 }
