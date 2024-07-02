@@ -2,6 +2,8 @@
 import { z } from "zod"
 import validator from "validator"
 import { redirect } from "next/navigation"
+import db from "../lib/db"
+import crypto from "crypto"
 
 interface IPrevState {
   token: boolean
@@ -31,6 +33,34 @@ export async function smsLogIn(prevState: IPrevState, formData: FormData) {
         error: result.error.flatten(),
       }
     } else {
+      // delete previous token
+      console.log("@@@@@ : ", result.data)
+      await db.sMSToken.deleteMany({
+        where: {
+          user: {
+            phone: result.data,
+          },
+        },
+      })
+      // create token
+      const token = await getVerifyToken()
+      await db.sMSToken.create({
+        data: {
+          token,
+          user: {
+            connectOrCreate: {
+              where: {
+                phone: result.data,
+              },
+              create: {
+                username: crypto.randomBytes(10).toString("hex"),
+                phone: result.data,
+              },
+            },
+          },
+        },
+      })
+      // send the token using twillio
       return {
         token: true,
       }
@@ -45,5 +75,21 @@ export async function smsLogIn(prevState: IPrevState, formData: FormData) {
     } else {
       redirect("/")
     }
+  }
+}
+async function getVerifyToken() {
+  const token = crypto.randomInt(100000, 999999).toString()
+  const exists = await db.sMSToken.findUnique({
+    where: {
+      token,
+    },
+    select: {
+      id: true,
+    },
+  })
+  if (exists) {
+    return getVerifyToken()
+  } else {
+    return token
   }
 }
