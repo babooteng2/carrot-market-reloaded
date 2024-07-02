@@ -1,9 +1,9 @@
 "use server"
-import { z } from "zod"
-import validator from "validator"
-import { redirect } from "next/navigation"
-import db from "../lib/db"
 import crypto from "crypto"
+import validator from "validator"
+import { z } from "zod"
+import db from "../lib/db"
+import { setSessionLogInID } from "../lib/session"
 
 interface IPrevState {
   token: boolean
@@ -17,7 +17,23 @@ const phoneSchema = z
     "Wrong phone format"
   )
 
-const tokenSchema = z.coerce.number().min(100000).max(999999)
+async function tokenExists(token: number) {
+  const exists = await db.sMSToken.findUnique({
+    where: {
+      token: token.toString(),
+    },
+    select: {
+      id: true,
+    },
+  })
+  return Boolean(exists)
+}
+
+const tokenSchema = z.coerce
+  .number()
+  .min(100000)
+  .max(999999)
+  .refine(tokenExists, "This token does not exist.")
 
 export async function smsLogIn(prevState: IPrevState, formData: FormData) {
   console.log(typeof formData.get("token"))
@@ -34,7 +50,6 @@ export async function smsLogIn(prevState: IPrevState, formData: FormData) {
       }
     } else {
       // delete previous token
-      console.log("@@@@@ : ", result.data)
       await db.sMSToken.deleteMany({
         where: {
           user: {
@@ -66,14 +81,31 @@ export async function smsLogIn(prevState: IPrevState, formData: FormData) {
       }
     }
   } else {
-    const result = tokenSchema.safeParse(token)
+    const result = await tokenSchema.spa(token)
     if (!result.success) {
       return {
         token: true,
         error: result.error.flatten(),
       }
     } else {
-      redirect("/")
+      // get the userId of token
+      const token = await db.sMSToken.findUnique({
+        where: {
+          token: result.data.toString(),
+        },
+        select: {
+          id: true,
+          userId: true,
+        },
+      })
+      await db.sMSToken.delete({
+        where: {
+          id: token!.id,
+        },
+      })
+      // log the user in
+      await setSessionLogInID(token!.userId, "/profile")
+      return { token: true }
     }
   }
 }
