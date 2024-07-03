@@ -8,6 +8,7 @@ npm i validator
 npm i @types/validator
 
 npm i prisma
+npm i twilio
 ```
 
 ```prisma setting

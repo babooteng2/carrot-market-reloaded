@@ -4,6 +4,7 @@ import validator from "validator"
 import { z } from "zod"
 import db from "../lib/db"
 import { setSessionLogInID } from "../lib/session"
+import twilio from "twilio"
 
 interface IPrevState {
   token: boolean
@@ -76,6 +77,16 @@ export async function smsLogIn(prevState: IPrevState, formData: FormData) {
         },
       })
       // send the token using twillio
+      const client = twilio(
+        process.env.TWILIO_ACCOUNT_SID,
+        process.env.TWILIO_AUTH_TOKEN
+      )
+      client.messages.create({
+        body: `Your Carrot verification code is ${token}`,
+        from: process.env.TWILIO_PHONE_NUMBER,
+        to: process.env.TEST_PHONE_NUMBER!,
+        //to: result.data,
+      })
       return {
         token: true,
       }
