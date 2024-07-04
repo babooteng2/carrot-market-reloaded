@@ -1,14 +1,17 @@
 "use server"
 import crypto from "crypto"
 import validator from "validator"
-import { z } from "zod"
+import { number, string, z } from "zod"
 import db from "../lib/db"
 import { setSessionLogInID } from "../lib/session"
 import twilio from "twilio"
 
 interface IPrevState {
   token: boolean
+  phone?: string
 }
+
+let prevPhone: string | undefined
 
 const phoneSchema = z
   .string()
@@ -22,6 +25,9 @@ async function tokenExists(token: number) {
   const exists = await db.sMSToken.findUnique({
     where: {
       token: token.toString(),
+      user: {
+        phone: prevPhone,
+      },
     },
     select: {
       id: true,
@@ -37,11 +43,11 @@ const tokenSchema = z.coerce
   .refine(tokenExists, "This token does not exist.")
 
 export async function smsLogIn(prevState: IPrevState, formData: FormData) {
-  console.log(typeof formData.get("token"))
-  //console.log(typeof tokenSchema.parse(formData.get("token")))
   const phone = formData.get("phone")
   const token = formData.get("token")
+
   if (!prevState.token) {
+    prevPhone = phone ? String(phone) : undefined
     const result = phoneSchema.safeParse(phone)
     if (!result.success) {
       console.log(result.error.flatten())
@@ -77,16 +83,19 @@ export async function smsLogIn(prevState: IPrevState, formData: FormData) {
         },
       })
       // send the token using twillio
-      const client = twilio(
-        process.env.TWILIO_ACCOUNT_SID,
-        process.env.TWILIO_AUTH_TOKEN
-      )
-      client.messages.create({
-        body: `Your Carrot verification code is ${token}`,
-        from: process.env.TWILIO_PHONE_NUMBER,
-        to: process.env.TEST_PHONE_NUMBER!,
-        //to: result.data,
-      })
+      /* 
+        const client = twilio(
+          process.env.TWILIO_ACCOUNT_SID,
+          process.env.TWILIO_AUTH_TOKEN
+        )
+
+        client.messages.create({
+          body: `Your Carrot verification code is ${token}`,
+          from: process.env.TWILIO_PHONE_NUMBER,
+          to: process.env.TEST_PHONE_NUMBER!,
+          //to: result.data,
+        })
+      */
       return {
         token: true,
       }
@@ -130,6 +139,7 @@ async function getVerifyToken() {
       id: true,
     },
   })
+
   if (exists) {
     return getVerifyToken()
   } else {

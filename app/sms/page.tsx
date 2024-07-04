@@ -7,6 +7,7 @@ import { smsLogIn } from "./actions"
 export default function SMSLogin() {
   const initialState = {
     token: false,
+    phone: "",
     error: undefined,
   }
   const [state, dispatch] = useFormState(smsLogIn, initialState)
