@@ -2,8 +2,9 @@
 import crypto from "crypto"
 import validator from "validator"
 import { number, string, z } from "zod"
-import db from "../lib/db"
-import { setSessionLogInID } from "../lib/session"
+// import db from "../../lib/db"
+import db from "@/lib/db"
+import { setSessionLogInID } from "../../lib/session"
 import twilio from "twilio"
 
 interface IPrevState {
