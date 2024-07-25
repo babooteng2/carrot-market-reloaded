@@ -1,15 +1,10 @@
 "use server"
 
-import { z } from "zod"
-import {
-  PASSWORD_MIN_LENGTH,
-  PASSWORD_REGEX,
-  PASSWORD_REG_ERROR,
-} from "../lib/constants"
 import db from "@/lib/db"
-import bcrypt from "bcrypt"
 import getSession from "@/lib/session"
+import bcrypt from "bcrypt"
 import { redirect } from "next/navigation"
+import { z } from "zod"
 
 const checkEmailExists = async (email: string) => {
   const user = await db.user.findUnique({
