@@ -19,7 +19,9 @@ async function getInitialProducts() {
   return products
 }
 
-export type InitalProducts = Prisma.PromiseReturnType<typeof getInitialProducts>
+export type InitialProducts = Prisma.PromiseReturnType<
+  typeof getInitialProducts
+>
 
 export default async function Products() {
   const initialProducts = await getInitialProducts()
