@@ -20,7 +20,16 @@ export default function ListProduct({
   return (
     <Link href={`/products/${id}`} className="flex gap-5">
       <div className="relative size-28 rounded-md overflow-hidden">
-        <Image fill src={photo} className="object-cover" alt={title} />
+        <Image
+          fill
+          src={photo}
+          className="object-cover"
+          alt={title}
+          priority={true}
+          sizes="sizes=(max-width: 320px) 280px,
+            (max-width: 480px) 440px,
+            800px"
+        />
       </div>
       <div className="flex flex-col gap-1 *:text-white">
         <span>{title}</span>

@@ -51,6 +51,10 @@ export default async function ProductDetail({
       <div className="relative aspect-square">
         <Image
           fill
+          priority={true}
+          sizes="sizes=(max-width: 320px) 280px,
+            (max-width: 480px) 440px,
+            800px"
           src={product.photo}
           className="object-cover"
           alt={product.title}
