@@ -8,9 +8,7 @@ interface ProductListProps {
   initialProducts: InitialProducts
 }
 
-export default async function ProductList({
-  initialProducts,
-}: ProductListProps) {
+export default function ProductList({ initialProducts }: ProductListProps) {
   const [products, setProducts] = useState(initialProducts)
   const [isLoading, setIsLoading] = useState(false)
   const [page, setPage] = useState(0)
@@ -35,7 +33,6 @@ export default async function ProductList({
           }
           setIsLoading(false)
         }
-        console.log(entries[0].isIntersecting)
       },
       {
         threshold: 1.0,
