@@ -28,7 +28,6 @@ async function getProduct(id: number) {
       },
     },
   })
-  console.log(product)
   return product
 }
 
