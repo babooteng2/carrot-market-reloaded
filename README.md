@@ -63,3 +63,4 @@ module.exports = {
 [heroicons](https://github.com/tailwindlabs/heroicons)
 [OAuth scope option](https://docs.github.com/en/apps/oauth-apps/building-oauth-apps/authorizing-oauth-apps)
 [OAuth documentation user](https://docs.github.com/rest/users/users#get-the-authenticated-user)
+[cloudflare images documentation](https://developers.cloudflare.com/images/upload-images/direct-creator-upload/#request-a-one-time-upload-url)

@@ -4,7 +4,7 @@ import Button from "@/components/button"
 import Input from "@/components/input"
 import { PhotoIcon } from "@heroicons/react/24/solid"
 import { useState } from "react"
-import { uploadProduct } from "./actions"
+import { getUploadUrl, uploadProduct } from "./actions"
 import { z } from "zod"
 import { useFormState } from "react-dom"
 
@@ -14,9 +14,6 @@ const fileSchema = z.object({
     .refine((type) => z.instanceof(File) && type.match("image/*"), {
       message: "이미지 파일만 업로드 가능합니다.",
     }),
-  /*  type: z.string().refine((type) => type.match("image/*"), {
-    message: "이미지 파일만 업로드 가능합니다.",
-  }), */
   size: z.number().max(1024 * 1024 * 4, {
     message: "4MB 이하의 파일만 업로드 할 수 있습니다.",
   }),
@@ -27,8 +24,9 @@ export default function AddProduct() {
   const [typeError, setTypeError] = useState<String | undefined>()
   const [sizeError, setSizeError] = useState<String | undefined>()
   const [state, action] = useFormState(uploadProduct, null)
+  const [uploadUrl, setUploadUrl] = useState("")
 
-  const onImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const onImageChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const {
       target: { files },
     } = event
@@ -52,6 +50,11 @@ export default function AddProduct() {
     if (file) {
       const url = URL.createObjectURL(file)
       setPreview(url)
+      const { success, result } = await getUploadUrl()
+      if (success) {
+        const { id, uploadURL } = result
+        setUploadUrl(uploadURL)
+      }
     }
   }
   return (
