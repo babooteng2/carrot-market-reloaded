@@ -23,8 +23,9 @@ export default function AddProduct() {
   const [preview, setPreview] = useState("")
   const [typeError, setTypeError] = useState<String | undefined>()
   const [sizeError, setSizeError] = useState<String | undefined>()
-  const [state, action] = useFormState(uploadProduct, null)
+
   const [uploadUrl, setUploadUrl] = useState("")
+  const [photoId, setPhotoId] = useState("")
 
   const onImageChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const {
@@ -54,9 +55,37 @@ export default function AddProduct() {
       if (success) {
         const { id, uploadURL } = result
         setUploadUrl(uploadURL)
+        setPhotoId(id)
       }
     }
   }
+
+  // _any == state
+  const interceptAction = async (_: any, formData: FormData) => {
+    /* const result = fileSchema.safeParse(formData.get("photo"))
+    if (photoId === "") {
+      console.log(result)
+      return result.error?.flatten()
+    } */
+    // 1.upload image to cloudflare => use cloudinary( free )
+    const file = formData.get("photo")
+    if (!file) {
+      return
+    }
+    const cloudflareForm = new FormData()
+    cloudflareForm.append("file", file)
+    await fetch(uploadUrl, {
+      method: "POST",
+      body: cloudflareForm,
+    })
+    const photoUrl = `https://imagedelivery.net/fe4Q0psONJV8oImEl9R2AQ/${photoId}`
+    // 2.replace 'photo' in formData
+    formData.set("photo", photoUrl)
+    // 3.call upload product
+    return uploadProduct(_, formData)
+  }
+  const [state, action] = useFormState(interceptAction, null)
+
   return (
     <div>
       <form action={action} className="p-5 flex flex-col gap-5">
@@ -84,6 +113,7 @@ export default function AddProduct() {
         </label>
         <input
           onChange={onImageChange}
+          required
           type="file"
           id="photo"
           name="photo"

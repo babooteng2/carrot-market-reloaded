@@ -1,6 +1,15 @@
 # Carrot Market Reloaded
 
-```terminal
+## Run dev
+
+```cmd
+npm run dev
+npx prisma studio
+```
+
+## Depedencies
+
+```cmd
 npm i -D daisyui@latest
 npm install @heroicons/react
 npm i zod
@@ -10,6 +19,8 @@ npm i @types/validator
 npm i prisma
 npm i twilio
 ```
+
+## Prisma
 
 ```prisma setting
  - 'npx prisma init'
@@ -56,6 +67,16 @@ module.exports = {
   plugins: [require("daisyui")],
 }
 ```
+
+## CloudFlare images
+
+```note
+Cloudflarea 계정 만들기 - 로그인 - Images - Overview - 결제 - Use API - Get an API create API token here - Create Token - Read and write to Cloudflarae Stream and Images (Use template 버튼) - Analytics 는 삭제 - Continue to summary - Create Token - copy - .env 파일
+```
+
+- next.config.mjs에 { hostname: "imagedelivery.net" } 패턴 추가
+
+## References
 
 [daisyUI](https://daisyui.com/docs/install/)
 [daisyUI test](https://stackblitz.com/edit/daisyui-nextjs?file=tailwind.config.js)

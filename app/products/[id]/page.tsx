@@ -54,7 +54,7 @@ export default async function ProductDetail({
           sizes="sizes=(max-width: 320px) 280px,
             (max-width: 480px) 440px,
             800px"
-          src={product.photo}
+          src={`${product.photo}/public`}
           className="object-cover"
           alt={product.title}
         />
