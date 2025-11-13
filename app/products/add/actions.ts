@@ -4,24 +4,10 @@ import db from "@/app/lib/db"
 import getSession from "@/app/lib/session"
 import fs from "fs/promises"
 import { redirect } from "next/navigation"
-import { z } from "zod"
+import { productSchema } from "./schema"
+import z from "zod"
 
-const productSchema = z.object({
-  photo: z
-    .string()
-    .refine((val) => val !== "/undefined", { message: "Photo is required" }),
-  title: z.string({
-    required_error: "Title is required",
-  }),
-  description: z.string({
-    required_error: "Description is required",
-  }),
-  price: z.coerce.number({
-    required_error: "Price is required",
-  }),
-})
-
-export async function uploadProduct(_: any, formData: FormData) {
+export async function uploadProduct(formData: FormData) {
   const data = {
     title: formData.get("title"),
     price: formData.get("price"),
@@ -38,7 +24,8 @@ export async function uploadProduct(_: any, formData: FormData) {
   const result = productSchema.safeParse(data)
 
   if (!result.success) {
-    return result.error.flatten()
+    return z.treeifyError(result.error)
+    //return result.error.flatten()
   } else {
     const session = await getSession()
     if (session.id) {

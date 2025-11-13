@@ -18,7 +18,11 @@ npm i @types/validator
 
 npm i prisma
 npm i twilio
+npm i react-hook-form
+npm i @hookform/resolvers
 ```
+
+- @hookform/resolvers : zod 스키마를 사용해서 프론트엔드와 백엔드 유효성검사 공유
 
 ## Prisma
 

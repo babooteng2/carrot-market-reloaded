@@ -6,89 +6,103 @@ import { PhotoIcon } from "@heroicons/react/24/solid"
 import { useState } from "react"
 import { getUploadUrl, uploadProduct } from "./actions"
 import { z } from "zod"
-import { useFormState } from "react-dom"
-
-const fileSchema = z.object({
-  type: z
-    .string()
-    .refine((type) => z.instanceof(File) && type.match("image/*"), {
-      message: "이미지 파일만 업로드 가능합니다.",
-    }),
-  size: z.number().max(1024 * 1024 * 4, {
-    message: "4MB 이하의 파일만 업로드 할 수 있습니다.",
-  }),
-})
+import { useForm } from "react-hook-form"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { fileSchema, productSchema, ProductType } from "./schema"
 
 export default function AddProduct() {
   const [preview, setPreview] = useState("")
   const [typeError, setTypeError] = useState<String | undefined>()
   const [sizeError, setSizeError] = useState<String | undefined>()
-
   const [uploadUrl, setUploadUrl] = useState("")
-  const [photoId, setPhotoId] = useState("")
+  const [file, setFile] = useState<File | null>(null)
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    setError,
+    formState: { errors },
+  } = useForm<ProductType>({
+    resolver: zodResolver(productSchema),
+  })
 
   const onImageChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const {
       target: { files },
     } = event
+
+    if (files?.length == 0) {
+      setPreview("")
+      setFile(null)
+      setValue("photo", "")
+    }
     if (!files) {
       return
     }
     const file = files[0]
-    const result = fileSchema.safeParse(file)
-
-    if (result.error?.flatten().fieldErrors.type) {
-      setTypeError("이미지 파일만 업로드 가능합니다.")
-      return
-    } else if (result.error?.flatten().fieldErrors.size) {
-      setTypeError("4MB 이하의 파일만 업로드 할 수 있습니다.")
-      return
-    } else {
-      setSizeError(undefined)
-      setTypeError(undefined)
+    const validationResult = fileSchema.safeParse(file)
+    validationResult.success
+    if (validationResult.error) {
+      const error = z.treeifyError(validationResult.error)
+      if (error.properties?.type) {
+        setTypeError("이미지 파일만 업로드 가능합니다.")
+        return
+      } else if (error.properties?.size) {
+        setSizeError("4MB 이하의 파일만 업로드 할 수 있습니다.")
+        return
+      } else {
+        setSizeError(undefined)
+        setTypeError(undefined)
+      }
     }
 
     if (file) {
       const url = URL.createObjectURL(file)
       setPreview(url)
+      setFile(file)
       const { success, result } = await getUploadUrl()
       if (success) {
         const { id, uploadURL } = result
         setUploadUrl(uploadURL)
-        setPhotoId(id)
+        setValue(
+          "photo",
+          `https://imagedelivery.net/fe4Q0psONJV8oImEl9R2AQ/${id}`
+        )
       }
     }
   }
 
-  // _any == state
-  const interceptAction = async (_: any, formData: FormData) => {
-    /* const result = fileSchema.safeParse(formData.get("photo"))
-    if (photoId === "") {
-      console.log(result)
-      return result.error?.flatten()
-    } */
-    // 1.upload image to cloudflare => use cloudinary( free )
-    const file = formData.get("photo")
+  const onSubmit = handleSubmit(async (data: ProductType) => {
     if (!file) {
       return
     }
     const cloudflareForm = new FormData()
     cloudflareForm.append("file", file)
-    await fetch(uploadUrl, {
+    const response = await fetch(uploadUrl, {
       method: "POST",
       body: cloudflareForm,
     })
-    const photoUrl = `https://imagedelivery.net/fe4Q0psONJV8oImEl9R2AQ/${photoId}`
-    // 2.replace 'photo' in formData
-    formData.set("photo", photoUrl)
-    // 3.call upload product
-    return uploadProduct(_, formData)
-  }
-  const [state, action] = useFormState(interceptAction, null)
+    if (response.status !== 200) {
+      return
+    }
+
+    const formData = new FormData()
+    formData.append("title", data.title)
+    formData.append("price", data.price + "")
+    formData.append("description", data.description)
+    formData.append("photo", data.photo)
+    //return uploadProduct(formData)
+    const errors = await uploadProduct(formData)
+    if (errors) {
+      //setError("")
+    }
+  })
+
+  const onValid = async () => await onSubmit()
 
   return (
     <div>
-      <form action={action} className="p-5 flex flex-col gap-5">
+      <form action={onValid} className="p-5 flex flex-col gap-5">
         <label
           htmlFor="photo"
           className="border-2 aspect-square flex items-center justify-center
@@ -101,8 +115,12 @@ export default function AddProduct() {
           {preview === "" ? (
             <>
               <PhotoIcon className="w-20" />
-              {state?.fieldErrors.photo ? (
-                <div className="text-red-600">{state.fieldErrors.photo}</div>
+              {errors.photo?.message ? (
+                <div className="text-red-600">{errors.photo?.message}</div>
+              ) : sizeError ? (
+                <div className="text-red-600">{sizeError}</div>
+              ) : typeError ? (
+                <div className="text-red-600">{typeError}</div>
               ) : (
                 <div className="text-neutral-400 text-sm">
                   사진을 추가해주세요.
@@ -113,41 +131,33 @@ export default function AddProduct() {
         </label>
         <input
           onChange={onImageChange}
-          required
           type="file"
           id="photo"
-          name="photo"
           accept="image/*"
           className="hidden"
         />
         <Input
-          name="title"
           required
           placeholder="제목"
           type="text"
-          errors={state?.fieldErrors.title}
+          {...register("title")}
+          errors={[errors.title?.message ?? ""]}
         />
         <Input
-          name="price"
           required
           placeholder="가격"
           type="number"
-          errors={state?.fieldErrors.price}
+          {...register("price")}
+          errors={[errors.price?.message ?? ""]}
         />
         <Input
-          name="description"
           required
           placeholder="자세한 설명"
           type="text"
-          errors={state?.fieldErrors.description}
+          {...register("description")}
+          errors={[errors.description?.message ?? ""]}
         />
-        {sizeError ? (
-          <p className="w-full text-center">{sizeError}</p>
-        ) : typeError ? (
-          <p className="w-full text-center">{typeError}</p>
-        ) : (
-          <Button text="작성 완료" />
-        )}
+        <Button text="작성 완료" />
       </form>
     </div>
   )
