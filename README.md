@@ -80,6 +80,10 @@ Cloudflarea 계정 만들기 - 로그인 - Images - Overview - 결제 - Use API 
 
 - next.config.mjs에 { hostname: "imagedelivery.net" } 패턴 추가
 
+## Docs
+- Intercepting Routes ([Next.js](https://nextjs.org/docs/app/api-reference/file-conventions/intercepting-routes))
+- Parallel Routes ([Next.js](https://nextjs.org/docs/app/api-reference/file-conventions/parallel-routes))
+
 ## References
 
 [daisyUI](https://daisyui.com/docs/install/)

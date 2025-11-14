@@ -27,7 +27,7 @@ export async function middleware(request: NextRequest) {
   } else {
     //status of user logged in and don't want to see publicOnlyUrls again
     if (exists) {
-      return NextResponse.redirect(new URL("/products", request.url))
+      return NextResponse.redirect(new URL("/home", request.url))
     }
   }
 }
