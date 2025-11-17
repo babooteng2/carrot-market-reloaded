@@ -1,35 +1,10 @@
-import db from "@/app/lib/db"
-import getSession from "@/app/lib/session"
+import { getProduct } from "@/app/lib/db"
+import { getIsOwner } from "@/app/lib/session"
 import { formatToWon } from "@/app/lib/utils"
 import { UserIcon } from "@heroicons/react/24/solid"
 import Image from "next/image"
 import Link from "next/link"
 import { notFound } from "next/navigation"
-
-async function getIsOwner(userId: number) {
-  const session = await getSession()
-  if (session.id) {
-    return session.id === userId
-  }
-  return false
-}
-
-async function getProduct(id: number) {
-  const product = await db.product.findUnique({
-    where: {
-      id,
-    },
-    include: {
-      user: {
-        select: {
-          username: true,
-          avatar: true,
-        },
-      },
-    },
-  })
-  return product
-}
 
 export default async function ProductDetail({
   params,

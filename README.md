@@ -81,6 +81,7 @@ Cloudflarea 계정 만들기 - 로그인 - Images - Overview - 결제 - Use API 
 - next.config.mjs에 { hostname: "imagedelivery.net" } 패턴 추가
 
 ## Docs
+
 - Intercepting Routes ([Next.js](https://nextjs.org/docs/app/api-reference/file-conventions/intercepting-routes))
 - Parallel Routes ([Next.js](https://nextjs.org/docs/app/api-reference/file-conventions/parallel-routes))
 
@@ -93,3 +94,4 @@ Cloudflarea 계정 만들기 - 로그인 - Images - Overview - 결제 - Use API 
 [OAuth scope option](https://docs.github.com/en/apps/oauth-apps/building-oauth-apps/authorizing-oauth-apps)
 [OAuth documentation user](https://docs.github.com/rest/users/users#get-the-authenticated-user)
 [cloudflare images documentation](https://developers.cloudflare.com/images/upload-images/direct-creator-upload/#request-a-one-time-upload-url)
+[modal](https://github.com/vercel/nextgram)
