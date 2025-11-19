@@ -6,6 +6,22 @@ import { revalidateTag } from "next/cache"
 import Image from "next/image"
 import { notFound } from "next/navigation"
 
+/*
+fetch 요청
+
+Next.js 15 버전부터는 fetch 요청은 기본적으로 더 이상 캐시되지 않습니다.
+특정 fetch 요청을 캐시에 포함시키려면 cache: 'force-cache' 옵션을 사용할 수 있습니다.
+```
+export default async function RootLayout() {
+const a = await fetch('https://...') // 캐시되지 않음
+const b = await fetch('https://...', { cache: 'force-cache' }) // 캐시됨
+
+// ...
+}
+```
+https://nextjs.org/docs/app/building-your-application/upgrading/version-15#fetch-requests
+*/
+
 export async function generateMetadata({ params }: { params: { id: string } }) {
   const product = await getCachedProductTitle(Number(params.id))
   return {
