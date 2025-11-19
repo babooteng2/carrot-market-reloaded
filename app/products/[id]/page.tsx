@@ -1,13 +1,13 @@
-import { getProduct } from "@/app/lib/db"
+import { getCachedProductDetal, getCachedProductTitle } from "@/app/lib/db"
 import { getIsOwner } from "@/app/lib/session"
 import { formatToWon } from "@/app/lib/utils"
 import { UserIcon } from "@heroicons/react/24/solid"
+import { revalidateTag } from "next/cache"
 import Image from "next/image"
-import Link from "next/link"
 import { notFound } from "next/navigation"
 
 export async function generateMetadata({ params }: { params: { id: string } }) {
-  const product = await getProduct(Number(params.id))
+  const product = await getCachedProductTitle(Number(params.id))
   return {
     title: `Product ${product?.title}`,
   }
@@ -22,11 +22,16 @@ export default async function ProductDetail({
   if (isNaN(id)) {
     return notFound()
   }
-  const product = await getProduct(id)
+  //const product = await getProduct(id)
+  const product = await getCachedProductDetal(id)
   if (!product) {
     return notFound()
   }
   const isOwner = await getIsOwner(product.userId)
+  const revalidate = async () => {
+    "use server"
+    revalidateTag("product-title")
+  }
   return (
     <div>
       <div className="relative aspect-square">
@@ -67,6 +72,13 @@ export default async function ProductDetail({
           {formatToWon(product.price)}원
         </span>
         {isOwner ? (
+          <form action={revalidate}>
+            <button className="bg-red-500 px-5 py-2.5 rounded-md text-white font-semibold">
+              Revalidate title cache
+            </button>
+          </form>
+        ) : null}
+        {/* {isOwner ? (
           <button className="bg-red-500 px-5 py-2.5 rounded-md text-white font-semibold">
             Delete product
           </button>
@@ -76,7 +88,7 @@ export default async function ProductDetail({
           href={""}
         >
           채팅하기
-        </Link>
+        </Link> */}
       </div>
     </div>
   )

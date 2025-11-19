@@ -1,4 +1,6 @@
 import { PrismaClient } from "@prisma/client"
+import { unstable_cache as nextCache, revalidatePath } from "next/cache"
+import { Prisma } from "@prisma/client"
 
 const db = new PrismaClient()
 export default db
@@ -47,6 +49,27 @@ export const createNewUserByGithub = async (
   return newUser
 }
 
+async function getInitialProducts() {
+  const products = await db.product.findMany({
+    select: {
+      title: true,
+      price: true,
+      created_at: true,
+      photo: true,
+      id: true,
+    },
+    /* take: 1, */
+    orderBy: {
+      created_at: "desc",
+    },
+  })
+  return products
+}
+
+export type InitialProducts = Prisma.PromiseReturnType<
+  typeof getInitialProducts
+>
+
 export async function getProduct(id: number) {
   const product = await db.product.findUnique({
     where: {
@@ -63,3 +86,36 @@ export async function getProduct(id: number) {
   })
   return product
 }
+
+async function getProductTitle(id: number) {
+  console.log("title")
+  const product = await db.product.findUnique({
+    where: {
+      id,
+    },
+    select: {
+      title: true,
+    },
+  })
+  return product
+}
+
+export const getCachedProducts = nextCache(
+  getInitialProducts,
+  ["home-products"],
+  {
+    revalidate: 60,
+  }
+)
+
+export const getCachedProductDetal = nextCache(getProduct, ["product-detail"], {
+  tags: ["product-detail"],
+})
+
+export const getCachedProductTitle = nextCache(
+  getProductTitle,
+  ["product-title"],
+  {
+    tags: ["product-title"],
+  }
+)
