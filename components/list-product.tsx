@@ -1,4 +1,4 @@
-import { formatToTimeAgo, formatToWon } from "@/app/lib/utils"
+import { formatToTimeAgo, formatToWon } from "@/lib/utils"
 import Image from "next/image"
 import Link from "next/link"
 

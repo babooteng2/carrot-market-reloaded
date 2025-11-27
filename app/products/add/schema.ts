@@ -1,4 +1,3 @@
-import { error } from "console"
 import { z } from "zod"
 
 export type ProductType = z.infer<typeof productSchema>

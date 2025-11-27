@@ -1,11 +1,12 @@
 "use server"
 
-import db from "@/app/lib/db"
-import getSession from "@/app/lib/session"
+import db from "@/lib/db"
+import getSession from "@/lib/session"
 import fs from "fs/promises"
 import { redirect } from "next/navigation"
 import { productSchema } from "./schema"
 import z from "zod"
+import { revalidatePath } from "next/cache"
 
 export async function uploadProduct(formData: FormData) {
   const data = {
@@ -24,8 +25,9 @@ export async function uploadProduct(formData: FormData) {
   const result = productSchema.safeParse(data)
 
   if (!result.success) {
-    return z.treeifyError(result.error)
+    //return z.treeifyError(result.error)
     //return result.error.flatten()
+    return z.flattenError(result.error)
   } else {
     const session = await getSession()
     if (session.id) {
@@ -45,6 +47,7 @@ export async function uploadProduct(formData: FormData) {
           id: true,
         },
       })
+      revalidatePath("/home")
       redirect(`/products/${product.id}`)
     }
   }

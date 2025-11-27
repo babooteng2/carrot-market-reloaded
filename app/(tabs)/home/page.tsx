@@ -1,4 +1,4 @@
-import { getCachedProducts } from "@/app/lib/db"
+import { getCachedProducts } from "@/lib/db"
 import ProductList from "@/components/product-list"
 import { PlusIcon } from "@heroicons/react/24/solid"
 import Link from "next/link"

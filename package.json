@@ -1,11 +1,11 @@
 {
   "name": "carrot-market-reloaded",
   "version": "0.1.0",
-  "private": true,
+  "private": true,  
   "scripts": {
     "clean": "rmdir /s /q .next",
     "dev": "next dev",
-    "build": "next build",
+    "build": "npm run clean && next build",
     "start": "next start",
     "lint": "next lint",
     "format": "prettier --check --ignore-path .gitignore .",

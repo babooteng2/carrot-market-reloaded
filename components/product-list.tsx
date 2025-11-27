@@ -1,6 +1,6 @@
 "use client"
 import { getMoreProducts } from "@/app/(tabs)/home/actions"
-import { InitialProducts } from "@/app/(tabs)/home/page"
+import { InitialProducts } from "@/lib/db"
 import { useEffect, useRef, useState } from "react"
 import ListProduct from "./list-product"
 
@@ -27,7 +27,7 @@ export default function ProductList({ initialProducts }: ProductListProps) {
           const newProducts = await getMoreProducts(page + 1)
           if (newProducts.length !== 0) {
             setPage((prev) => prev + 1)
-            setProducts((prev) => [...prev, ...newProducts])
+            setProducts((prev: any) => [...prev, ...newProducts])
           } else {
             setIsLastPage(true)
           }

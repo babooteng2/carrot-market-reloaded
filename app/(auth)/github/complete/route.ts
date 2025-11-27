@@ -1,10 +1,6 @@
-import {
-  createNewUserByGithub,
-  getUserByID,
-  isUniqueUsername,
-} from "@/app/lib/db"
-import { setSessionLogInID } from "@/app/lib/session"
-import { getAccessToken, getUserProfile } from "@/app/lib/utils"
+import { createNewUserByGithub, getUserByID, isUniqueUsername } from "@/lib/db"
+import { setSessionLogInID } from "@/lib/session"
+import { getAccessToken, getUserProfile } from "@/lib/utils"
 import { NextRequest } from "next/server"
 
 export async function GET(request: NextRequest) {

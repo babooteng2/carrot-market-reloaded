@@ -1,4 +1,4 @@
-import { GITHUB_ACCESS_BASE_URL } from "@/app/lib/constants"
+import { GITHUB_ACCESS_BASE_URL } from "@/lib/constants"
 import { redirect } from "next/navigation"
 
 export function GET() {

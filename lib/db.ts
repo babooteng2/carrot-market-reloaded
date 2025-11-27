@@ -50,6 +50,7 @@ export const createNewUserByGithub = async (
 }
 
 async function getInitialProducts() {
+  console.log("hit!")
   const products = await db.product.findMany({
     select: {
       title: true,
@@ -70,7 +71,7 @@ export type InitialProducts = Prisma.PromiseReturnType<
   typeof getInitialProducts
 >
 
-export async function getProduct(id: number) {
+export async function getProduct(id: number) {  
   const product = await db.product.findUnique({
     where: {
       id,
@@ -88,7 +89,6 @@ export async function getProduct(id: number) {
 }
 
 async function getProductTitle(id: number) {
-  console.log("title")
   const product = await db.product.findUnique({
     where: {
       id,

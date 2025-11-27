@@ -43,11 +43,11 @@ export default function AddProduct() {
     const validationResult = fileSchema.safeParse(file)
     validationResult.success
     if (validationResult.error) {
-      const error = z.treeifyError(validationResult.error)
-      if (error.properties?.type) {
+      const error = z.flattenError(validationResult.error)
+      if (error.fieldErrors.type) {
         setTypeError("이미지 파일만 업로드 가능합니다.")
         return
-      } else if (error.properties?.size) {
+      } else if (error.fieldErrors.size) {
         setSizeError("4MB 이하의 파일만 업로드 할 수 있습니다.")
         return
       } else {

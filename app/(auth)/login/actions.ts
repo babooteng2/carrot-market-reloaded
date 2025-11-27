@@ -20,16 +20,18 @@ const checkEmailExists = async (email: string) => {
 
 const formSchema = z.object({
   email: z
-    .string()
     .email()
     .toLowerCase()
     .refine(checkEmailExists, "An account with this email doesn't exist"),
   password: z.string({
-    required_error: "Please enter password",
+    error: (iss) =>
+      iss.input === undefined ? "Please enter password" : "Invalid input.",
   }),
   // temporary code block for test
-  //.min(PASSWORD_MIN_LENGTH)
-  //.regex(PASSWORD_REGEX, PASSWORD_REG_ERROR),
+  /* 
+  .min(PASSWORD_MIN_LENGTH, `비밀번호는 최소 ${PASSWORD_MIN_LENGTH}자 이상이어야 합니다.`)
+  .regex(PASSWORD_REGEX, PASSWORD_REG_ERROR),
+   */
 })
 
 export async function login(prevState: any, formData: FormData) {
@@ -40,7 +42,10 @@ export async function login(prevState: any, formData: FormData) {
   }
   const result = await formSchema.safeParseAsync(data)
   if (!result.success) {
-    return result.error.flatten()
+    //return result.error.flatten()
+    //return result.error.flatten
+    //return z.treeifyError(result.error)
+    return z.flattenError(result.error)
   } else {
     // find a user with the email
     const user = await db.user.findUnique({

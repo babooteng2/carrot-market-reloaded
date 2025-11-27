@@ -75,7 +75,7 @@ module.exports = {
 ## CloudFlare images
 
 ```note
-Cloudflarea 계정 만들기 - 로그인 - Images - Overview - 결제 - Use API - Get an API create API token here - Create Token - Read and write to Cloudflarae Stream and Images (Use template 버튼) - Analytics 는 삭제 - Continue to summary - Create Token - copy - .env 파일
+Cloudflare 계정 만들기 - 로그인 - Images - Overview - 결제 - Use API - Get an API create API token here - Create Token - Read and write to Cloudflarae Stream and Images (Use template 버튼) - Analytics 는 삭제 - Continue to summary - Create Token - copy - .env 파일
 ```
 
 - next.config.mjs에 { hostname: "imagedelivery.net" } 패턴 추가

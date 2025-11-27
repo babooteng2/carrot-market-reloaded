@@ -1,6 +1,6 @@
-import { getProduct } from "@/app/lib/db"
-import { getIsOwner } from "@/app/lib/session"
-import { formatToWon } from "@/app/lib/utils"
+import { getProduct } from "@/lib/db"
+import { getIsOwner } from "@/lib/session"
+import { formatToWon } from "@/lib/utils"
 import CloseButton from "@/components/close-button"
 import { UserIcon } from "@heroicons/react/24/solid"
 import Image from "next/image"
@@ -10,10 +10,10 @@ import { notFound } from "next/navigation"
 export default async function Modal({ params }: { params: { id: string } }) {
   const id = await Number(params.id)
   const product = await getProduct(id)
-  const isOwner = await getIsOwner(id)
   if (isNaN(id) || !product) {
     return notFound()
   }
+  const isOwner = await getIsOwner(Number(product.userId))
 
   return (
     <div className="absolute w-full h-full z-50 flex items-center justify-center bg-black bg-opacity-60 left-0 top-0">
@@ -53,13 +53,14 @@ export default async function Modal({ params }: { params: { id: string } }) {
             <button className="bg-red-500 px-5 py-2.5 rounded-md text-white font-semibold">
               Delete product
             </button>
-          ) : null}
-          <Link
-            className="bg-orange-500 px-5 py-2.5 rounded-md text-white font-semibold"
-            href={""}
-          >
-            채팅하기
-          </Link>
+          ) : (
+            <Link
+              className="bg-orange-500 px-5 py-2.5 rounded-md text-white font-semibold"
+              href={""}
+            >
+              채팅하기
+            </Link>
+          )}
         </div>
       </div>
     </div>

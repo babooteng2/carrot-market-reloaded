@@ -1,10 +1,10 @@
 "use server"
 import crypto from "crypto"
 import validator from "validator"
-import { number, string, z } from "zod"
+import { z } from "zod"
 // import db from "../../lib/db"
 import db from "@/lib/db"
-import { setSessionLogInID } from "../../lib/session"
+import { setSessionLogInID } from "../../../lib/session"
 import twilio from "twilio"
 
 interface IPrevState {
@@ -51,10 +51,12 @@ export async function smsLogIn(prevState: IPrevState, formData: FormData) {
     prevPhone = phone ? String(phone) : undefined
     const result = phoneSchema.safeParse(phone)
     if (!result.success) {
-      console.log(result.error.flatten())
+      console.log(z.flattenError(result.error))
+      //console.log(result.error.flatten())
       return {
         token: false,
-        error: result.error.flatten(),
+        error: z.flattenError(result.error),
+        //error: result.error.flatten(),
       }
     } else {
       // delete previous token
@@ -106,7 +108,8 @@ export async function smsLogIn(prevState: IPrevState, formData: FormData) {
     if (!result.success) {
       return {
         token: true,
-        error: result.error.flatten(),
+        error: z.flattenError(result.error),
+        //error: result.error.flatten(),
       }
     } else {
       // get the userId of token
