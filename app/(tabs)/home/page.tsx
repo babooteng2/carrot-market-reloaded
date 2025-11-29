@@ -5,6 +5,8 @@ import Link from "next/link"
 
 export const metadata = { title: "Home" }
 
+export const dynamic = "force-dynamic"
+
 export default async function Products() {
   const initialProducts = await getCachedProducts()
   return (
