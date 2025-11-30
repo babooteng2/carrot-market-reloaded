@@ -1,4 +1,4 @@
-import {
+import db, {
   getCachedProductDetal,
   getCachedProductTitle,
   getProduct,
@@ -97,4 +97,23 @@ export default async function ProductDetail({
       </div>
     </div>
   )
+}
+
+export async function generateStaticParams() {
+  const products = await db.product.findMany({
+    select: {
+      id: true,
+    },
+  })
+  return products.map((product) => ({
+    id: product.id + "",
+  }))
+  /* [
+    { id: "1" },
+    { id: "22" },
+    { id: "23" },
+    { id: "24" },
+    { id: "25" },
+    { id: "26" },
+  ] */
 }

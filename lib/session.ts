@@ -21,9 +21,9 @@ export const setSessionLogInID = async (id: number, redirectPage: string) => {
 }
 
 export async function getIsOwner(userId: number) {
-  const session = await getSession()
+  /*  const session = await getSession()
   if (session.id) {
     return session.id === userId
-  }
+  } */
   return false
 }
