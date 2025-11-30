@@ -99,6 +99,9 @@ export default async function ProductDetail({
   )
 }
 
+// default true
+export const dynamicParams = false
+
 export async function generateStaticParams() {
   const products = await db.product.findMany({
     select: {
