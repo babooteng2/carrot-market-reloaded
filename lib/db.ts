@@ -1,5 +1,5 @@
 import { PrismaClient } from "@prisma/client"
-import { unstable_cache as nextCache, revalidatePath } from "next/cache"
+import { unstable_cache as nextCache } from "next/cache"
 import { Prisma } from "@prisma/client"
 
 const db = new PrismaClient()
@@ -50,7 +50,7 @@ export const createNewUserByGithub = async (
 }
 
 async function getInitialProducts() {
-  console.log("hit!")
+  console.log("Products DB hit")
   const products = await db.product.findMany({
     select: {
       title: true,
@@ -71,7 +71,7 @@ export type InitialProducts = Prisma.PromiseReturnType<
   typeof getInitialProducts
 >
 
-export async function getProduct(id: number) {  
+export async function getProduct(id: number) {
   const product = await db.product.findUnique({
     where: {
       id,
@@ -104,11 +104,11 @@ export const getCachedProducts = nextCache(
   getInitialProducts,
   ["home-products"],
   {
-    revalidate: 60,
+    tags: ["home-products"],
   }
 )
 
-export const getCachedProductDetal = nextCache(getProduct, ["product-detail"], {
+export const getCachedProduct = nextCache(getProduct, ["product"], {
   tags: ["product-detail"],
 })
 
@@ -119,3 +119,36 @@ export const getCachedProductTitle = nextCache(
     tags: ["product-title"],
   }
 )
+
+export const deleteProductById = (id: number) => {
+  const product = db.product.delete({
+    where: {
+      id: id,
+    },
+  })
+  return product
+}
+
+export const modifyProductById = async (
+  id: number,
+  result: any,
+  sessionId: number
+) => {
+  const product = await db.product.update({
+    data: {
+      title: result.data.title,
+      price: result.data.price,
+      description: result.data.description,
+      photo: result.data.photo,
+      user: {
+        connect: {
+          id: sessionId,
+        },
+      },
+    },
+    where: {
+      id,
+    },
+  })
+  return product
+}

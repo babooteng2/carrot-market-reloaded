@@ -1,13 +1,19 @@
-import db, {
-  getCachedProductDetal,
-  getCachedProductTitle,
-  getProduct,
-} from "@/lib/db"
+/* 
+  13.Code Challenge
+
+- choose caching strategy for uploadProudct
+  - [v] nextCache, dynamic, revalidate, revalidatePath, revliadateTags
+  - [v] should revalidate Products(/home) and ProductDetail (/product/id)
+  - [v] `/products/add` conflicts with /products/[id] so that replace address '/product/add'
+- [v] implement editProduct page with cachinng
+*/
+
+import { getCachedProduct, getCachedProductTitle } from "@/lib/db"
 import { getIsOwner } from "@/lib/session"
 import { formatToWon } from "@/lib/utils"
 import { UserIcon } from "@heroicons/react/24/solid"
-import { revalidateTag } from "next/cache"
 import Image from "next/image"
+import Link from "next/link"
 import { notFound } from "next/navigation"
 
 export async function generateMetadata({ params }: { params: { id: string } }) {
@@ -27,16 +33,12 @@ export default async function ProductDetail({
     return notFound()
   }
 
-  //const product = await getCachedProductDetal(id)
-  const product = await getProduct(id)
+  const product = await getCachedProduct(id)
   if (!product) {
     return notFound()
   }
   const isOwner = await getIsOwner(product.userId)
-  const revalidate = async () => {
-    "use server"
-    revalidateTag("product-title")
-  }
+
   return (
     <div>
       <div className="relative aspect-square">
@@ -77,46 +79,13 @@ export default async function ProductDetail({
           {formatToWon(product.price)}원
         </span>
         {isOwner ? (
-          <form action={revalidate}>
+          <form>
             <button className="bg-red-500 px-5 py-2.5 rounded-md text-white font-semibold">
-              Revalidate title cache
+              <Link href={`/product/modify/${id}`}>Modify</Link>
             </button>
           </form>
         ) : null}
-        {/* {isOwner ? (
-          <button className="bg-red-500 px-5 py-2.5 rounded-md text-white font-semibold">
-            Delete product
-          </button>
-        ) : null}
-        <Link
-          className="bg-orange-500 px-5 py-2.5 rounded-md text-white font-semibold"
-          href={""}
-        >
-          채팅하기
-        </Link> */}
       </div>
     </div>
   )
-}
-
-// default true
-export const dynamicParams = false
-
-export async function generateStaticParams() {
-  const products = await db.product.findMany({
-    select: {
-      id: true,
-    },
-  })
-  return products.map((product) => ({
-    id: product.id + "",
-  }))
-  /* [
-    { id: "1" },
-    { id: "22" },
-    { id: "23" },
-    { id: "24" },
-    { id: "25" },
-    { id: "26" },
-  ] */
 }

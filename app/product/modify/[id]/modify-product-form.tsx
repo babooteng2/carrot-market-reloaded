@@ -4,73 +4,38 @@ import Button from "@/components/button"
 import Input from "@/components/input"
 import { PhotoIcon } from "@heroicons/react/24/solid"
 import { useState } from "react"
-import { getUploadUrl, uploadProduct } from "./actions"
-import { z } from "zod"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { fileSchema, productSchema, ProductType } from "./schema"
+import { productSchema, ProductType } from "../../add/schema"
+import { onImageChange } from "@/lib/image-changer"
+import { editProduct } from "./actions"
 
-export default function AddProduct() {
-  const [preview, setPreview] = useState("")
-  const [typeError, setTypeError] = useState<String | undefined>()
-  const [sizeError, setSizeError] = useState<String | undefined>()
+export default function ModifyProductForm({
+  photo,
+  title,
+  price,
+  description,
+  id,
+}: any) {
+  const [preview, setPreview] = useState(`${photo}/public`)
+  const [typeError, setTypeError] = useState<String | null>()
+  const [sizeError, setSizeError] = useState<String | null>()
   const [uploadUrl, setUploadUrl] = useState("")
   const [file, setFile] = useState<File | null>(null)
   const {
     register,
     handleSubmit,
     setValue,
-    setError,
     formState: { errors },
   } = useForm<ProductType>({
     resolver: zodResolver(productSchema),
+    defaultValues: {
+      photo,
+      title,
+      price,
+      description,
+    },
   })
-
-  const onImageChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    const {
-      target: { files },
-    } = event
-
-    if (files?.length == 0) {
-      setPreview("")
-      setFile(null)
-      setValue("photo", "")
-    }
-    if (!files) {
-      return
-    }
-    const file = files[0]
-    const validationResult = fileSchema.safeParse(file)
-    validationResult.success
-    if (validationResult.error) {
-      const error = z.flattenError(validationResult.error)
-      if (error.fieldErrors.type) {
-        setTypeError("이미지 파일만 업로드 가능합니다.")
-        return
-      } else if (error.fieldErrors.size) {
-        setSizeError("4MB 이하의 파일만 업로드 할 수 있습니다.")
-        return
-      } else {
-        setSizeError(undefined)
-        setTypeError(undefined)
-      }
-    }
-
-    if (file) {
-      const url = URL.createObjectURL(file)
-      setPreview(url)
-      setFile(file)
-      const { success, result } = await getUploadUrl()
-      if (success) {
-        const { id, uploadURL } = result
-        setUploadUrl(uploadURL)
-        setValue(
-          "photo",
-          `https://imagedelivery.net/fe4Q0psONJV8oImEl9R2AQ/${id}`
-        )
-      }
-    }
-  }
 
   const onSubmit = handleSubmit(async (data: ProductType) => {
     if (!file) {
@@ -91,8 +56,7 @@ export default function AddProduct() {
     formData.append("price", data.price + "")
     formData.append("description", data.description)
     formData.append("photo", data.photo)
-    //return uploadProduct(formData)
-    const errors = await uploadProduct(formData)
+    const errors = await editProduct(Number(id), formData)
     if (errors) {
       //setError("")
     }
@@ -130,7 +94,17 @@ export default function AddProduct() {
           ) : null}
         </label>
         <input
-          onChange={onImageChange}
+          onChange={(event) =>
+            onImageChange(
+              event,
+              setPreview,
+              setFile,
+              setUploadUrl,
+              setValue,
+              setTypeError,
+              setSizeError
+            )
+          }
           type="file"
           id="photo"
           accept="image/*"

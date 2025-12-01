@@ -6,7 +6,7 @@ import fs from "fs/promises"
 import { redirect } from "next/navigation"
 import { productSchema } from "./schema"
 import z from "zod"
-import { revalidatePath } from "next/cache"
+import { revalidatePath, revalidateTag } from "next/cache"
 
 export async function uploadProduct(formData: FormData) {
   const data = {
@@ -47,7 +47,8 @@ export async function uploadProduct(formData: FormData) {
           id: true,
         },
       })
-      revalidatePath("/home")
+      //revalidatePath("/home")
+      revalidateTag("home-products")
       redirect(`/products/${product.id}`)
     }
   }
