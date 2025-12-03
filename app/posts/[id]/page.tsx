@@ -1,11 +1,11 @@
 import db from "@/lib/db"
 import getSession from "@/lib/session"
 import { formatToTimeAgo } from "@/lib/utils"
-import { EyeIcon, HandThumbUpIcon } from "@heroicons/react/24/solid"
-import { HandThumbUpIcon as OutLineHandThumbUpIcon } from "@heroicons/react/24/outline"
-import { unstable_cache as nextCache, revalidateTag } from "next/cache"
+import { EyeIcon } from "@heroicons/react/24/solid"
+import { unstable_cache as nextCache } from "next/cache"
 import Image from "next/image"
 import { notFound } from "next/navigation"
+import LikeButton from "@/components/like-button"
 
 async function getPost(id: number) {
   try {
@@ -59,7 +59,7 @@ async function getIsLikeStatus(postId: number) {
     },
   })
   return {
-    isLiked,
+    isLiked: Boolean(isLiked),
     likeCount,
   }
 }
@@ -79,37 +79,6 @@ export default async function PostDetail({
   if (isNaN(postId)) return notFound()
   const post = await getCachedPost(postId)
   if (!post) return notFound()
-
-  const likePost = async () => {
-    "use server"
-    await new Promise((r) => setTimeout(r, 5000))
-    try {
-      const session = await getSession()
-      await db.like.create({
-        data: {
-          postId,
-          userId: session.id!,
-        },
-      })
-    } catch (e) {}
-    revalidateTag(`like-status-${postId}`)
-  }
-
-  const dislikePost = async () => {
-    "use server"
-    try {
-      const session = await getSession()
-      await db.like.delete({
-        where: {
-          id: {
-            postId,
-            userId: session.id!,
-          },
-        },
-      })
-      revalidateTag(`like-status-${postId}`)
-    } catch (e) {}
-  }
 
   const { isLiked, likeCount } = await getCachedLikeStatus(postId)
   return (
@@ -138,24 +107,7 @@ export default async function PostDetail({
           <EyeIcon className="size-5" />
           <span>조회 {post.views}</span>
         </div>
-        <form action={isLiked ? dislikePost : likePost}>
-          <button
-            className={`flex items-center gap-2 text-neutral-400 text-sm border border-neutral-400 rounded-full p-2 hover:bg-neutral-800 transition-colors
-              ${isLiked ? "bg-orange-500 text-white border-orange-500 pr-3" : "hover:bg-neutral-800"}`}
-          >
-            {isLiked ? (
-              <>
-                <HandThumbUpIcon className="size-5" />
-                <span>{likeCount}</span>
-              </>
-            ) : (
-              <>
-                <OutLineHandThumbUpIcon className="size-5" />
-                <span>공감하기 ( {likeCount} )</span>
-              </>
-            )}
-          </button>
-        </form>
+        <LikeButton isLiked={isLiked} likeCount={likeCount} postId={postId} />
       </div>
     </div>
   )
