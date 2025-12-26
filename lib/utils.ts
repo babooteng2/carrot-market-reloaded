@@ -4,6 +4,7 @@ import {
   GITHUB_AUTH_EMAIL_URL,
   GITHUB_AUTH_USER_URL,
 } from "./constants"
+import { locales } from "validator/lib/isIBAN"
 
 interface IGithubUserEmail {
   email: String
@@ -66,4 +67,20 @@ export function formatToTimeAgo(date: string): string {
 
 export function formatToWon(price: number): string {
   return price.toLocaleString("ko-KR")
+}
+
+export function formatToCommentTime(time: Date): string {
+  const date = typeof time === "string" ? new Date(time) : time
+
+  const pad = (n: number) => (n < 10 ? "0" + n : n.toString())
+
+  const year = date.getFullYear().toString().slice(-2)
+  const month = pad(date.getMonth() + 1)
+  const day = pad(date.getDate())
+
+  const hours = pad(date.getHours())
+  const minutes = pad(date.getMinutes())
+  const seconds = pad(date.getSeconds())
+
+  return `${year}.${month}.${day} ${hours}:${minutes}:${seconds}`
 }

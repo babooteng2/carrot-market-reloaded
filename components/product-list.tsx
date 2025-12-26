@@ -1,8 +1,9 @@
 "use client"
+
 import { getMoreProducts } from "@/app/(tabs)/home/actions"
 import { InitialProducts } from "@/lib/db"
 import { useEffect, useRef, useState } from "react"
-import ListProduct from "./list-product"
+import ListProduct from "@/components/list-product"
 
 interface ProductListProps {
   initialProducts: InitialProducts

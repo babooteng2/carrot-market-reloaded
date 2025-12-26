@@ -1,14 +1,4 @@
-/* 
-  13.Code Challenge
-
-- choose caching strategy for uploadProudct
-  - [v] nextCache, dynamic, revalidate, revalidatePath, revliadateTags
-  - [v] should revalidate Products(/home) and ProductDetail (/product/id)
-  - [v] `/products/add` conflicts with /products/[id] so that replace address '/product/add'
-- [v] implement editProduct page with cachinng
-*/
-
-import { getCachedProduct, getCachedProductTitle } from "@/lib/db"
+import { getCachedProduct, getCachedTitle } from "@/lib/db"
 import { getIsOwner } from "@/lib/session"
 import { formatToWon } from "@/lib/utils"
 import { UserIcon } from "@heroicons/react/24/solid"
@@ -17,9 +7,9 @@ import Link from "next/link"
 import { notFound } from "next/navigation"
 
 export async function generateMetadata({ params }: { params: { id: string } }) {
-  const product = await getCachedProductTitle(Number(params.id))
+  const product = await getCachedTitle("Product", Number(params.id))
   return {
-    title: `Product ${product?.title}`,
+    title: `Product ${product.title}`,
   }
 }
 

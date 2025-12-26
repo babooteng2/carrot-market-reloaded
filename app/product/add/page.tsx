@@ -40,7 +40,7 @@ export default function AddProduct() {
     }
     const file = files[0]
     const validationResult = fileSchema.safeParse(file)
-    validationResult.success
+
     if (validationResult.error) {
       const error = z.flattenError(validationResult.error)
       if (error.fieldErrors.type) {
@@ -52,6 +52,7 @@ export default function AddProduct() {
       } else {
         setSizeError(undefined)
         setTypeError(undefined)
+        return
       }
     }
 

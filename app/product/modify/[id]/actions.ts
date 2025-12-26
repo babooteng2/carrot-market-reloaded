@@ -3,9 +3,10 @@
 import { modifyProductById } from "@/lib/db"
 import getSession from "@/lib/session"
 import { redirect } from "next/navigation"
-import { productSchema } from "../../add/schema"
+import { productSchema } from "@/app/product/add/schema"
 import z from "zod"
 import { revalidatePath, revalidateTag } from "next/cache"
+import { CACHED_HOME_PRODUCTS, CACHED_PRODUCT_DETAIL } from "@/lib/constants"
 
 export async function editProduct(id: number, formData: FormData) {
   const data = {
@@ -23,8 +24,8 @@ export async function editProduct(id: number, formData: FormData) {
     if (session.id) {
       const product = await modifyProductById(id, result, session.id)
       //revalidatePath("/home")
-      revalidateTag("home-products")
-      revalidateTag("product-detail")
+      revalidateTag(CACHED_HOME_PRODUCTS)
+      revalidateTag(CACHED_PRODUCT_DETAIL + id)
       redirect(`/products/${product.id}`)
     }
   }

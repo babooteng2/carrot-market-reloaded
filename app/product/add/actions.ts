@@ -7,6 +7,7 @@ import { redirect } from "next/navigation"
 import { productSchema } from "./schema"
 import z from "zod"
 import { revalidatePath, revalidateTag } from "next/cache"
+import { CACHED_HOME_PRODUCTS } from "@/lib/constants"
 
 export async function uploadProduct(formData: FormData) {
   const data = {
@@ -48,7 +49,7 @@ export async function uploadProduct(formData: FormData) {
         },
       })
       //revalidatePath("/home")
-      revalidateTag("home-products")
+      revalidateTag(CACHED_HOME_PRODUCTS)
       redirect(`/products/${product.id}`)
     }
   }

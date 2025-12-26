@@ -10,3 +10,11 @@ export const GITHUB_ACCESS_TOKEN_URL =
   "https://github.com/login/oauth/access_token"
 export const GITHUB_AUTH_USER_URL = "https://api.github.com/user"
 export const GITHUB_AUTH_EMAIL_URL = "https://api.github.com/user/emails"
+
+export const CACHED_HOME_PRODUCTS = "cached-home-products"
+export const CACHED_PRODUCT_DETAIL = "cached-product-detail-"
+export const CACHED_LIFE_POSTS = "cached-life-posts"
+export const CACHED_LIFE_DETAIL = "cached-life-detail-"
+export const CACHED_LIFE_COMMENTS = "cached-life-comments"
+export const CACHED_LIKE_STATUS = "cached-like-status-"
+export const CACHED_TITLE = "cached-title-"
