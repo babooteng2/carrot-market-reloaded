@@ -86,10 +86,14 @@ export default async function PostDetail({
           />
         </div>
         <div className="w-full h-px bg-neutral-500 mt-4" />
-        <FormComment postId={postId} />
-        <div className="w-full h-px bg-neutral-500 mb-4" />
+        <FormComment
+          postId={postId}
+          initialComments={comments}
+          ownerId={ownerId}
+        />
+        {/* <div className="w-full h-px bg-neutral-500 mb-4" /> */}
         {/* === commnet list  */}
-        <PostCommentList initialPostComments={comments} ownerId={ownerId} />
+        {/* <PostCommentList initialPostComments={comments} ownerId={ownerId} /> */}
         {/* === end of commnet list  */}
       </div>
     </div>

@@ -51,12 +51,9 @@ export async function smsLogIn(prevState: IPrevState, formData: FormData) {
     prevPhone = phone ? String(phone) : undefined
     const result = phoneSchema.safeParse(phone)
     if (!result.success) {
-      console.log(z.flattenError(result.error))
-      //console.log(result.error.flatten())
       return {
         token: false,
         error: z.flattenError(result.error),
-        //error: result.error.flatten(),
       }
     } else {
       // delete previous token

@@ -5,6 +5,7 @@ import { PostType } from "@/app/posts/schema"
 import { postCommentType } from "@/app/posts/schema"
 import {
   CACHED_HOME_PRODUCTS,
+  CACHED_LIFE_COMMENTS,
   CACHED_LIFE_DETAIL,
   CACHED_LIFE_POSTS,
   CACHED_LIKE_STATUS,
@@ -385,9 +386,9 @@ export const createPostComment = async (
         postId,
         userId,
       },
-      select: {
+      /* select: {
         id: true,
-      },
+      }, */
     })
     return newComment
   } catch (e) {
@@ -481,8 +482,8 @@ export async function getInitialPostComments(postId: number) {
 export async function getCachedInitialPostComments(postId: number) {
   const cachedOperation = await nextCache(
     getInitialPostComments,
-    [CACHED_LIFE_POSTS],
-    { tags: [CACHED_LIFE_POSTS] }
+    [CACHED_LIFE_COMMENTS],
+    { tags: [CACHED_LIFE_COMMENTS] }
   )
   return cachedOperation(postId)
 }

@@ -24,7 +24,6 @@ export default function ModifyBox({
     setIsModalOpen(false)
   }
   const handleConfirm = () => {
-    console.log("모달 확인 버튼 클릭")
     setIsModalOpen(false)
     if (removeFunc) {
       removeFunc(postId, commentId)

@@ -154,10 +154,6 @@ export async function createAccount(prevState: any, formData: FormData) {
   // const result = formSchema.safeParseAsync(data)
   const result = await formSchema.spa(data)
   if (!result.success) {
-    /* console.log(result.error.flatten())
-    return result.error.flatten() */
-    //return result.error.issues
-    //return z.treeifyError(result.error)
     return z.flattenError(result.error)
   } else {
     const hashedPassword = await bcrypt.hash(result.data.password, 12)

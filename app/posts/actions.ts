@@ -21,6 +21,7 @@ import {
   createPost,
   updatePost,
 } from "@/lib/db"
+import { Prisma } from "@prisma/client"
 
 const commentFormSchema = z.object({
   payload: z
@@ -30,28 +31,33 @@ const commentFormSchema = z.object({
     .max(200, "200자 이하의 댓글만 가능해요."),
 })
 
-export async function savePostComment(
-  postId: number,
-  _prevState: any,
-  formData: FormData
-) {
+export const savePostComment = async (
+  _: any,
+  formData: FormData,
+  postId: number
+) => {
   const payload = formData.get("payload")
+  //const postId = Number(formData.get("postId"))
   const data = {
     payload,
   }
+  console.log("savePostComment calling...1")
   /// delay!
-  await new Promise((resolve) => setTimeout(resolve, 3000))
+  await new Promise((resolve) => setTimeout(resolve, 5000))
+  console.log("savePostComment calling...2")
   /// end of delay!
   const result = await commentFormSchema.spa(data)
   if (!result.success) {
+    console.log("result failed : ", result.data)
     return { success: false, error: z.flattenError(result.error) }
   } else {
+    console.log("result success : ", result.data)
     const user = await getSession()
-    const newComment = await createPostComment(payload + "", postId, user.id!)
+    const newComment = await createPostComment(payload + "", postId!, user.id!)
     revalidateTag(CACHED_LIFE_POSTS)
     revalidateTag(CACHED_LIFE_DETAIL + postId)
     revalidateTag(CACHED_LIFE_COMMENTS)
-    return { success: true, result: newComment }
+    return { success: true, message: newComment }
   }
 }
 
