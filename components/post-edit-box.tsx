@@ -3,16 +3,22 @@
 import ModifyBox from "@/components/modify-box"
 import { handleModifyPost, handleRemovePost } from "@/app/posts/actions"
 
+interface IlogInUserProfile {
+  id: number
+  username: string
+  avatar?: string | null
+}
+
 export default function PostEditBox({
-  ownerId,
+  logInUserProfile,
   postId,
   postUserId,
 }: {
-  ownerId: number
+  logInUserProfile: IlogInUserProfile
   postId: number
   postUserId: number
 }) {
-  return ownerId === postUserId ? (
+  return logInUserProfile.id === postUserId ? (
     <ModifyBox
       postId={postId}
       modifyFunc={handleModifyPost}

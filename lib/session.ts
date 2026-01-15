@@ -1,6 +1,7 @@
 import { getIronSession } from "iron-session"
 import { cookies } from "next/headers"
 import { redirect } from "next/navigation"
+import { getUserByID } from "./db"
 
 interface SessionContent {
   id?: number
@@ -26,4 +27,13 @@ export async function getIsOwner(userId: number) {
     return session.id === userId
   }
   return false
+}
+
+export async function getProfile() {
+  const session = await getSession()
+  if (session.id) {
+    const user = await getUserByID(session.id)
+    return user
+  }
+  //return false
 }

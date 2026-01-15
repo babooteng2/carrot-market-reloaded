@@ -4,11 +4,13 @@
 - add Comment function
   - [o] comment Form
   - [o] comment List
-  - [x] show the comment page with optimistic update immediately
+  - [o] show the comment page with optimistic update immediately
 - additional
   - [x] cached post title ->  to be general use, combine prodct function -> combine function failed
   - [x] prevent increase view count when clicking likeBtn
   - [o] post CRUD
+  - [x] comment Editing
+  - [x] comment paging
 */
 
 "use server"
@@ -18,8 +20,7 @@ import { notFound } from "next/navigation"
 import { formatToTimeAgo } from "@/lib/utils"
 import LikeButton from "@/components/like-button"
 import FormComment from "@/components/form-post-comment"
-import PostCommentList from "@/components/post-comment-list"
-import getSession from "@/lib/session"
+import { getProfile } from "@/lib/session"
 import PostEditBox from "@/components/post-edit-box"
 import PostBottomMenu from "@/components/post-bottom-menu"
 import {
@@ -47,7 +48,8 @@ export default async function PostDetail({
   if (!post) return notFound()
   const { isLiked, likeCount } = await getCachedLikeStatus(postId)
   const comments = await getCachedInitialPostComments(postId)
-  const ownerId = (await getSession()).id!
+  const logInUserProfile = (await getProfile())!
+  if (!logInUserProfile) return notFound()
 
   return (
     <div className="p-5 text-white">
@@ -70,7 +72,7 @@ export default async function PostDetail({
           </div>
         </div>
         <PostEditBox
-          ownerId={ownerId}
+          logInUserProfile={logInUserProfile}
           postId={postId}
           postUserId={post.userId}
         />
@@ -89,12 +91,8 @@ export default async function PostDetail({
         <FormComment
           postId={postId}
           initialComments={comments}
-          ownerId={ownerId}
+          logInUserProfile={logInUserProfile}
         />
-        {/* <div className="w-full h-px bg-neutral-500 mb-4" /> */}
-        {/* === commnet list  */}
-        {/* <PostCommentList initialPostComments={comments} ownerId={ownerId} /> */}
-        {/* === end of commnet list  */}
       </div>
     </div>
   )

@@ -29,13 +29,27 @@ export default db
 
 /*= USER =*/
 
-export const getUserByID = async (id: number) => {
+export const getGitHubUserByID = async (id: number) => {
   const user = await db.user.findUnique({
     where: {
       github_id: String(id),
     },
     select: {
       id: true,
+    },
+  })
+  return user
+}
+
+export const getUserByID = async (id: number) => {
+  const user = await db.user.findUnique({
+    where: {
+      id: id,
+    },
+    select: {
+      id: true,
+      avatar: true,
+      username: true,
     },
   })
   return user

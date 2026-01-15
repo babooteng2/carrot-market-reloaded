@@ -1,4 +1,9 @@
-import { createNewUserByGithub, getUserByID, isUniqueUsername } from "@/lib/db"
+import {
+  createNewUserByGithub,
+  getGitHubUserByID,
+  getUserByID,
+  isUniqueUsername,
+} from "@/lib/db"
 import { setSessionLogInID } from "@/lib/session"
 import { getAccessToken, getUserProfile } from "@/lib/utils"
 import { NextRequest } from "next/server"
@@ -17,7 +22,7 @@ export async function GET(request: NextRequest) {
   const userProfile = await getUserProfile(request, access_token)
   const { id, avatar_url, login, email } = userProfile
   //const githubEmailID = email ? String(email).split("@")[0] : null
-  const user = await getUserByID(id)
+  const user = await getGitHubUserByID(id)
   if (user) {
     await setSessionLogInID(user.id, "/profile")
   } else {
