@@ -5,6 +5,7 @@ import { UserIcon } from "@heroicons/react/24/solid"
 import Image from "next/image"
 import Link from "next/link"
 import { notFound } from "next/navigation"
+import { createChatRoom } from "@/app/products/action"
 
 export async function generateMetadata({ params }: { params: { id: string } }) {
   const product = await getCachedTitle("Product", Number(params.id))
@@ -28,6 +29,7 @@ export default async function ProductDetail({
     return notFound()
   }
   const isOwner = await getIsOwner(product.userId)
+  const createChatRoomWithUserId = createChatRoom.bind(null, product.userId)
 
   return (
     <div>
@@ -74,7 +76,13 @@ export default async function ProductDetail({
               <Link href={`/product/modify/${id}`}>Modify</Link>
             </button>
           </form>
-        ) : null}
+        ) : (
+          <form action={createChatRoomWithUserId}>
+            <button className="bg-orange-500 px-5 py-2.5 rounded-md text-white font-semibold">
+              채팅하기
+            </button>
+          </form>
+        )}
       </div>
     </div>
   )
