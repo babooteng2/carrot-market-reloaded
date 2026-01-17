@@ -3,9 +3,9 @@
 import { InitialChatMessages } from "@/app/chats/[id]/page"
 import { formatToTimeAgo } from "@/lib/utils"
 import { ArrowUpCircleIcon, UserIcon } from "@heroicons/react/24/outline"
-import { createClient } from "@supabase/supabase-js"
+import { createClient, RealtimeChannel } from "@supabase/supabase-js"
 import Image from "next/image"
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 
 interface ChatMessageListProps {
   chatRoomId: string
@@ -19,6 +19,7 @@ export default function ChatMessagesList({
 }: ChatMessageListProps) {
   const [messages, setMessages] = useState(initialMessages)
   const [message, setMessage] = useState("")
+  const channel = useRef<RealtimeChannel>()
   const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const {
       target: { value },
@@ -40,6 +41,11 @@ export default function ChatMessagesList({
         userId,
       },
     ])
+    channel.current?.send({
+      type: "broadcast",
+      event: "message",
+      payload: { message },
+    })
     setMessage("")
   }
   useEffect(() => {
@@ -47,10 +53,15 @@ export default function ChatMessagesList({
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
       process.env.NEXT_PUBLIC_SUPABASE_PUBLIC_KEY!
     )
-    const channel = client.channel(`room-${chatRoomId}`)
-    channel.on("broadcast", { event: "message" }, (payload) => {
-      console.log(payload)
-    })
+    channel.current = client.channel(`room-${chatRoomId}`)
+    channel.current
+      .on("broadcast", { event: "message" }, (payload) => {
+        console.log(payload)
+      })
+      .subscribe()
+    return () => {
+      channel.current?.unsubscribe()
+    }
   }, [])
 
   return (
