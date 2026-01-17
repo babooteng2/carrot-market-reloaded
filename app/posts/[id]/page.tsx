@@ -46,10 +46,13 @@ export default async function PostDetail({
   if (isNaN(postId)) return notFound()
   const post = await getCachedPost(postId)
   if (!post) return notFound()
-  const { isLiked, likeCount } = await getCachedLikeStatus(postId)
   const comments = await getCachedInitialPostComments(postId)
   const logInUserProfile = (await getProfile())!
   if (!logInUserProfile) return notFound()
+  const { isLiked, likeCount } = await getCachedLikeStatus(
+    postId,
+    logInUserProfile.id
+  )
 
   return (
     <div className="p-5 text-white">

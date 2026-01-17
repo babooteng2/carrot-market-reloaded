@@ -328,43 +328,41 @@ export const getCachedPost = async (id: number) => {
 }
 
 /* = LIKE = */
-export const likePost = async (postId: number) => {
+export const likePost = async (postId: number, userId: number) => {
   console.log("= call likePost =")
   //await new Promise((r) => setTimeout(r, 5000))
   try {
-    const session = await getSession()
+    /* const session = await getSession() */
     await db.like.create({
       data: {
         postId,
-        userId: session.id!,
+        userId,
       },
     })
   } catch (e) {}
 }
 
-export const dislikePost = async (postId: number) => {
+export const dislikePost = async (postId: number, userId: number) => {
   console.log("= call dislikePost =")
   //await new Promise((r) => setTimeout(r, 5000))
   try {
-    const session = await getSession()
     await db.like.delete({
       where: {
         id: {
           postId,
-          userId: session.id!,
+          userId,
         },
       },
     })
   } catch (e) {}
 }
 
-async function getIsLikeStatus(postId: number) {
-  const session = await getSession()
+async function getIsLikeStatus(postId: number, userId: number) {
   const isLiked = await db.like.findUnique({
     where: {
       id: {
         postId,
-        userId: session.id!,
+        userId,
       },
     },
   })
@@ -379,11 +377,11 @@ async function getIsLikeStatus(postId: number) {
   }
 }
 
-export function getCachedLikeStatus(postId: number) {
+export function getCachedLikeStatus(postId: number, userId: number) {
   const cachedOperation = nextCache(getIsLikeStatus, [CACHED_LIKE_STATUS], {
     tags: [CACHED_LIKE_STATUS + postId],
   })
-  return cachedOperation(postId)
+  return cachedOperation(postId, userId)
 }
 
 /* = POST COMMENT = */

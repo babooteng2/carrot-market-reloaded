@@ -1,9 +1,8 @@
 "use server"
 
-import getSession, { getIsOwner } from "@/lib/session"
+import getSession from "@/lib/session"
 import { revalidateTag } from "next/cache"
 import { redirect } from "next/navigation"
-import { startTransition } from "react"
 import z from "zod"
 import { postSchema, PostType } from "@/app/posts/schema"
 import {
@@ -21,7 +20,6 @@ import {
   createPost,
   updatePost,
 } from "@/lib/db"
-import { Prisma } from "@prisma/client"
 
 const commentFormSchema = z.object({
   payload: z
@@ -88,7 +86,8 @@ export const handleRemovePost = async (postId: number) => {
 
 export const handleLikeBtnClick = async (postId: number, isLiked: boolean) => {
   try {
-    isLiked ? await dislikePost(postId) : await likePost(postId)
+    const userId = (await getSession()).id!
+    isLiked ? await dislikePost(postId, userId) : await likePost(postId, userId)
   } catch (e) {}
   revalidateTag(CACHED_LIKE_STATUS + postId)
   revalidateTag(CACHED_LIFE_POSTS)

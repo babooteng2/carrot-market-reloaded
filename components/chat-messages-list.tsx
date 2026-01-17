@@ -3,14 +3,17 @@
 import { InitialChatMessages } from "@/app/chats/[id]/page"
 import { formatToTimeAgo } from "@/lib/utils"
 import { ArrowUpCircleIcon, UserIcon } from "@heroicons/react/24/outline"
+import { createClient } from "@supabase/supabase-js"
 import Image from "next/image"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 
 interface ChatMessageListProps {
+  chatRoomId: string
   userId: number
   initialMessages: InitialChatMessages
 }
 export default function ChatMessagesList({
+  chatRoomId,
   userId,
   initialMessages,
 }: ChatMessageListProps) {
@@ -39,6 +42,16 @@ export default function ChatMessagesList({
     ])
     setMessage("")
   }
+  useEffect(() => {
+    const client = createClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_PUBLIC_KEY!
+    )
+    const channel = client.channel(`room-${chatRoomId}`)
+    channel.on("broadcast", { event: "message" }, (payload) => {
+      console.log(payload)
+    })
+  }, [])
 
   return (
     <div className={`flex flex-col gap-5 min-h-screen justify-end max-w-full`}>
