@@ -2,7 +2,7 @@
 
 import { InitialChatMessages } from "@/app/chats/[id]/page"
 import { formatToTimeAgo } from "@/lib/utils"
-import { CogIcon, UserIcon } from "@heroicons/react/24/outline"
+import { ArrowUpCircleIcon, UserIcon } from "@heroicons/react/24/outline"
 import Image from "next/image"
 import { useState } from "react"
 
@@ -15,8 +15,33 @@ export default function ChatMessagesList({
   initialMessages,
 }: ChatMessageListProps) {
   const [messages, setMessages] = useState(initialMessages)
+  const [message, setMessage] = useState("")
+  const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const {
+      target: { value },
+    } = event
+    setMessage(value)
+  }
+  const onSubmit = (event: React.FormEvent) => {
+    event.preventDefault()
+    setMessages((prevMsgs) => [
+      ...prevMsgs,
+      {
+        user: {
+          username: "string",
+          avatar: "xxx",
+        },
+        id: Date.now(),
+        payload: message,
+        created_at: new Date(),
+        userId,
+      },
+    ])
+    setMessage("")
+  }
+
   return (
-    <div className={`flex flex-col gap-5 min-h-screen justify-end`}>
+    <div className={`flex flex-col gap-5 min-h-screen justify-end max-w-full`}>
       {messages.map((message) => (
         <div
           key={message.id}
@@ -36,10 +61,10 @@ export default function ChatMessagesList({
             ))}
 
           <div
-            className={`flex flex-col gap-1 ${message.userId === userId && "items-end"}`}
+            className={`flex flex-col gap-1 ${message.userId === userId && "items-end"} max-w-full`}
           >
             <span
-              className={`${message.userId === userId ? "bg-neutral-500" : "bg-orange-500"} p-2.5 rounded-md`}
+              className={`${message.userId === userId ? "bg-neutral-500" : "bg-orange-500"} p-2.5 rounded-md inline-block text-wrap whitespace-normal break-words max-w-full`}
             >
               {message.payload}
             </span>
@@ -49,6 +74,19 @@ export default function ChatMessagesList({
           </div>
         </div>
       ))}
+      <form className="flex relative" onSubmit={onSubmit}>
+        <input
+          type="text"
+          className="bg-transparent rounded-full w-full h-10 focus:outline-none px-5 ring-2 focus:ring-4 transition ring-neutral-200 focus:ring-neutral-50 border-none placeholder:text-neutral-400"
+          required
+          onChange={onChange}
+          value={message}
+          placeholder="Write a message..."
+        />
+        <button className="abolute right-0">
+          <ArrowUpCircleIcon className="size-10 text-orange-500 transition-colors hover:text-orange-300" />
+        </button>
+      </form>
     </div>
   )
 }
