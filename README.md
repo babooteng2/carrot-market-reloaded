@@ -101,3 +101,13 @@ Cloudflare 계정 만들기 - 로그인 - Images - Overview - 결제 - Use API -
 ```
 useOptimistic : when db change something, it occurs mutation
 ```
+
+## Supabase
+
+```cmd
+npm install @supabase/supabase-js
+```
+
+- make organization and project
+- project settings > copy API Keys and URL of DataAPI > set on env file
+- creatClient > make channel on client > broadcast on channel
