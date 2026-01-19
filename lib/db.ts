@@ -3,14 +3,7 @@ import { unstable_cache as nextCache } from "next/cache"
 import getSession from "./session"
 import { PostType } from "@/app/posts/schema"
 import { postCommentType } from "@/app/posts/schema"
-import {
-  CACHED_HOME_PRODUCTS,
-  CACHED_LIFE_COMMENTS,
-  CACHED_LIFE_DETAIL,
-  CACHED_LIFE_POSTS,
-  CACHED_LIKE_STATUS,
-  CACHED_PRODUCT_DETAIL,
-} from "./constants"
+import { CACHED_HOME_PRODUCTS, CACHED_LIFE_COMMENTS, CACHED_LIFE_DETAIL, CACHED_LIFE_POSTS, CACHED_LIKE_STATUS, CACHED_PRODUCT_DETAIL } from "./constants"
 
 /* const db = new PrismaClient()
 export default db */
@@ -67,12 +60,7 @@ export const isUniqueUsername = async (username: string) => {
   return !Boolean(user)
 }
 
-export const createNewUserByGithub = async (
-  newGitHubUsername: string,
-  id: number,
-  avatar_url: string,
-  email: string
-) => {
+export const createNewUserByGithub = async (newGitHubUsername: string, id: number, avatar_url: string, email: string) => {
   const newUser = await db.user.create({
     data: {
       username: newGitHubUsername,
@@ -107,9 +95,7 @@ async function getInitialProducts() {
   return products
 }
 
-export type InitialProducts = Prisma.PromiseReturnType<
-  typeof getInitialProducts
->
+export type InitialProducts = Prisma.PromiseReturnType<typeof getInitialProducts>
 
 export async function getProduct(id: number) {
   const product = await db.product.findUnique({
@@ -140,13 +126,9 @@ async function getProductTitle(id: number) {
   return product
 }
 
-export const getCachedProducts = nextCache(
-  getInitialProducts,
-  [CACHED_HOME_PRODUCTS],
-  {
-    tags: [CACHED_HOME_PRODUCTS],
-  }
-)
+export const getCachedProducts = nextCache(getInitialProducts, [CACHED_HOME_PRODUCTS], {
+  tags: [CACHED_HOME_PRODUCTS],
+})
 
 export const getCachedProduct = async (id: number) => {
   const cachedOperation = nextCache(getProduct, [CACHED_PRODUCT_DETAIL], {
@@ -155,13 +137,9 @@ export const getCachedProduct = async (id: number) => {
   return cachedOperation(id)
 }
 
-export const getCachedProductTitle = nextCache(
-  getProductTitle,
-  ["product-title"],
-  {
-    tags: ["product-title"],
-  }
-)
+export const getCachedProductTitle = nextCache(getProductTitle, ["product-title"], {
+  tags: ["product-title"],
+})
 
 export const deleteProductById = (id: number) => {
   const product = db.product.delete({
@@ -172,11 +150,7 @@ export const deleteProductById = (id: number) => {
   return product
 }
 
-export const modifyProductById = async (
-  id: number,
-  result: any,
-  sessionId: number
-) => {
+export const modifyProductById = async (id: number, result: any, sessionId: number) => {
   const product = await db.product.update({
     data: {
       title: result.data.title,
@@ -386,11 +360,7 @@ export function getCachedLikeStatus(postId: number, userId: number) {
 
 /* = POST COMMENT = */
 
-export const createPostComment = async (
-  payload: string,
-  postId: number,
-  userId: number
-) => {
+export const createPostComment = async (payload: string, postId: number, userId: number) => {
   try {
     const newComment = db.comment.create({
       data: {
@@ -423,10 +393,7 @@ export async function getPostComment(commentId: number) {
   }
 }
 
-export async function updatePostComment(
-  commentId: number,
-  data: postCommentType
-) {
+export async function updatePostComment(commentId: number, data: postCommentType) {
   try {
     const comment = await db.comment.update({
       where: {
@@ -492,17 +459,53 @@ export async function getInitialPostComments(postId: number) {
 }
 
 export async function getCachedInitialPostComments(postId: number) {
-  const cachedOperation = await nextCache(
-    getInitialPostComments,
-    [CACHED_LIFE_COMMENTS],
-    { tags: [CACHED_LIFE_COMMENTS] }
-  )
+  const cachedOperation = await nextCache(getInitialPostComments, [CACHED_LIFE_COMMENTS], { tags: [CACHED_LIFE_COMMENTS] })
   return cachedOperation(postId)
 }
 
-export type InitialPostComments = Prisma.PromiseReturnType<
-  typeof getInitialPostComments
->
+export type InitialPostComments = Prisma.PromiseReturnType<typeof getInitialPostComments>
+
+/* = chats = */
+export type TuserProfile = Awaited<ReturnType<typeof getProfile>>
+export async function getProfile() {
+  const session = await getSession()
+  try {
+    const result = await db.user.findUnique({
+      where: {
+        id: session.id,
+      },
+      select: {
+        id: true,
+        username: true,
+        avatar: true,
+      },
+    })
+    return result
+  } catch (e) {
+    console.error("= getUserProfile Error = : ", e)
+    return null
+  }
+}
+
+export async function saveMessage(payload: string, chatRoomId: string) {
+  const session = await getSession()
+  try {
+    const result = await db.message.create({
+      data: {
+        chatRoomId,
+        userId: session.id!,
+        payload,
+      },
+      select: {
+        id: true,
+      },
+    })
+    return result
+  } catch (e) {
+    console.error("= saveMessage Error = : ", e)
+    return null
+  }
+}
 
 /* = common = */
 

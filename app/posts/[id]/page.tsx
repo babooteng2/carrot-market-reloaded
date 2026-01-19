@@ -20,7 +20,6 @@ import { notFound } from "next/navigation"
 import { formatToTimeAgo } from "@/lib/utils"
 import LikeButton from "@/components/like-button"
 import FormComment from "@/components/form-post-comment"
-import { getProfile } from "@/lib/session"
 import PostEditBox from "@/components/post-edit-box"
 import PostBottomMenu from "@/components/post-bottom-menu"
 import {
@@ -28,6 +27,7 @@ import {
   getCachedLikeStatus,
   getCachedPost,
   getCachedTitle,
+  getProfile,
 } from "@/lib/db"
 
 export async function generateMetadata({ params }: { params: { id: string } }) {

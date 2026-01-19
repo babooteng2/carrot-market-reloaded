@@ -28,12 +28,3 @@ export async function getIsOwner(userId: number) {
   }
   return false
 }
-
-export async function getProfile() {
-  const session = await getSession()
-  if (session.id) {
-    const user = await getUserByID(session.id)
-    return user
-  }
-  //return false
-}
