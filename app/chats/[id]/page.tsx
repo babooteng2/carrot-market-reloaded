@@ -1,5 +1,5 @@
 import ChatMessagesList from "@/components/chat-messages-list"
-import db from "@/lib/db"
+import db, { getProfile } from "@/lib/db"
 import getSession from "@/lib/session"
 import { notFound } from "next/navigation"
 async function getRoom(id: string) {
@@ -17,7 +17,7 @@ async function getRoom(id: string) {
   })
   if (room) {
     const session = await getSession()
-    const canSee = Boolean(room.users.find((user) => user.id === session.id))
+    const canSee = Boolean(room.users.find(user => user.id === session.id))
     if (!canSee) {
       return null
     }
@@ -54,12 +54,7 @@ export default async function ChatRoom({ params }: { params: { id: string } }) {
     return notFound()
   }
   const initialMessages = await getMessages(params.id)
-  const session = await getSession()
-  return (
-    <ChatMessagesList
-      chatRoomId={params.id}
-      userId={session.id!}
-      initialMessages={initialMessages}
-    />
-  )
+  const profile = await getProfile()
+  if (!profile) notFound()
+  return <ChatMessagesList chatRoomId={params.id} profile={profile} initialMessages={initialMessages} />
 }
