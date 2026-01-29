@@ -18,8 +18,7 @@
       }
     ],
     "paths": {
-      //@/components/input @/app/lib
-      "@/*": ["./*", "./components/*", "./app/*"]
+      "@/*": ["./*"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],

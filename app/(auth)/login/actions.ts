@@ -20,12 +20,12 @@ const checkEmailExists = async (email: string) => {
 
 const formSchema = z.object({
   email: z
+    .string()
     .email()
     .toLowerCase()
-    .refine(checkEmailExists, "An account with this email doesn't exist"),
+    .refine(checkEmailExists, "An account with this email does not exist."),
   password: z.string({
-    error: (iss) =>
-      iss.input === undefined ? "Please enter password" : "Invalid input.",
+    required_error: "Password is required",
   }),
   // temporary code block for test
   /* 
@@ -35,7 +35,7 @@ const formSchema = z.object({
 })
 
 export async function login(prevState: any, formData: FormData) {
-  await new Promise((resolve) => setTimeout(resolve, 5000))
+  await new Promise(resolve => setTimeout(resolve, 5000))
   const data = {
     email: formData.get("email"),
     password: formData.get("password"),
@@ -45,7 +45,8 @@ export async function login(prevState: any, formData: FormData) {
     //return result.error.flatten()
     //return result.error.flatten
     //return z.treeifyError(result.error)
-    return z.flattenError(result.error)
+    //return z.flattenError(result.error)
+    return result.error.flatten()
   } else {
     // find a user with the email
     const user = await db.user.findUnique({
