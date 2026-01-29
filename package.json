@@ -5,7 +5,9 @@
   "scripts": {
     "clean": "rmdir /s /q .next",
     "dev": "next dev",
-    "build": "prisma generate && prisma migrate deploy && next build",
+    "vercel-build": "prisma generate && prisma migrate deploy && next build",
+    "postinstall": "prisma generate",
+    "build": "prisma migrate deploy && next build",
     "start": "next start",
     "lint": "next lint"
   },
