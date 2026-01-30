@@ -5,9 +5,8 @@
   "scripts": {
     "clean": "rmdir /s /q .next",
     "dev": "next dev",
-    "vercel-build": "npx prisma generate && npx prisma migrate deploy && next build",
-    "build": "npx prisma migrate deploy && next build",
-    "prebuild": "npx prisma generate",
+    "build": "prisma migrate deploy && next build",
+    "prebuild": "prisma generate",
     "start": "next start",
     "lint": "next lint"
   },
@@ -36,7 +35,7 @@
     "@types/validator": "^13.11.9",
     "autoprefixer": "^10.0.1",
     "eslint": "^8.57.0",
-    "eslint-config-next": "14.1.0",
+    "eslint-config-next": "14.2.3",
     "postcss": "^8",
     "prisma": "^5.11.0",
     "tailwindcss": "^3.3.0",
