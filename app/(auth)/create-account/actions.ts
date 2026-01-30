@@ -48,8 +48,8 @@ const formSchema = z
   .object({
     username: z
       .string({
-        error: (iss) =>
-          iss.code === "invalid_type" ? `Invalid input, ${iss.expected}` : null,
+        // error: (iss) =>
+        //   iss.code === "invalid_type" ? `Invalid input, ${iss.expected}` : null,
         //iss.input === undefined ? "Field is required." : "Invalid input.",
       })
       .toLowerCase()
@@ -57,7 +57,7 @@ const formSchema = z
       .min(1, "이름은 필수 입니다.")
       .refine(checkUserName, "No potatoes allowed"),
 
-    email: z.email().toLowerCase(),
+    email: z.string().email().toLowerCase(),
 
     password: z.string().min(PASSWORD_MIN_LENGTH),
     // for test
@@ -77,7 +77,8 @@ const formSchema = z
       ctx.addIssue({
         code: "custom",
         message: "This username is already taken",
-        input: { username },
+        path: ["username"],
+        //input: { username },
       })
     }
   })
@@ -94,8 +95,7 @@ const formSchema = z
       ctx.addIssue({
         code: "custom",
         message: "This email is already taken",
-        input: { email },
-        //path: ["email"],
+        path: ["email"],
         //fatal: true,
       })
     }
@@ -154,8 +154,10 @@ export async function createAccount(prevState: any, formData: FormData) {
   // const result = formSchema.safeParseAsync(data)
   const result = await formSchema.spa(data)
   if (!result.success) {
-    return z.flattenError(result.error)
+    //return z.flattenError(result.error)
+    return result.error.flatten()
   } else {
+    result.data.password
     const hashedPassword = await bcrypt.hash(result.data.password, 12)
     const user = await db.user.create({
       data: {

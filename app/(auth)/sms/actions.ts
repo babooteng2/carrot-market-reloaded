@@ -2,9 +2,8 @@
 import crypto from "crypto"
 import validator from "validator"
 import { z } from "zod"
-// import db from "../../lib/db"
 import db from "@/lib/db"
-import { setSessionLogInID } from "../../../lib/session"
+import { setSessionLogInID } from "@/lib/session"
 import twilio from "twilio"
 
 interface IPrevState {
@@ -18,7 +17,7 @@ const phoneSchema = z
   .string()
   .trim()
   .refine(
-    (phone) => validator.isMobilePhone(phone, "ko-KR"),
+    phone => validator.isMobilePhone(phone, "ko-KR"),
     "Wrong phone format"
   )
 
@@ -53,7 +52,8 @@ export async function smsLogIn(prevState: IPrevState, formData: FormData) {
     if (!result.success) {
       return {
         token: false,
-        error: z.flattenError(result.error),
+        //error: z.flattenError(result.error),
+        error: result.error.flatten(),
       }
     } else {
       // delete previous token
@@ -105,8 +105,8 @@ export async function smsLogIn(prevState: IPrevState, formData: FormData) {
     if (!result.success) {
       return {
         token: true,
-        error: z.flattenError(result.error),
-        //error: result.error.flatten(),
+        //error: z.flattenError(result.error),
+        error: result.error.flatten(),
       }
     } else {
       // get the userId of token

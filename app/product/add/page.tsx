@@ -42,7 +42,8 @@ export default function AddProduct() {
     const validationResult = fileSchema.safeParse(file)
 
     if (validationResult.error) {
-      const error = z.flattenError(validationResult.error)
+      // const error = z.flattenError(validationResult.error)
+      const error = validationResult.error.flatten()
       if (error.fieldErrors.type) {
         setTypeError("이미지 파일만 업로드 가능합니다.")
         return
@@ -110,8 +111,7 @@ export default function AddProduct() {
            border-dashed cursor-pointer bg-center bg-cover"
           style={{
             backgroundImage: `url(${preview})`,
-          }}
-        >
+          }}>
           {preview === "" ? (
             <>
               <PhotoIcon className="w-20" />
