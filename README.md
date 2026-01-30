@@ -118,4 +118,5 @@ npm install @supabase/supabase-js
 npm i -g vercel
 vercel login
 vercel link
+npx prisma migrate dev --create-only
 ```
